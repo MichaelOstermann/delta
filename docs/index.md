@@ -36,6 +36,29 @@ This library has been largely ported from [quill-delta](https://github.com/slab/
 
 ## Example
 
+```ts
+import { Delta } from "@monstermann/delta";
+
+// Create a document
+const doc = Delta.insert([], "Hello world");
+
+// Create a change that makes "Hello" bold
+const change = Delta.retain([], 5, { bold: true });
+
+// Apply the change
+const result = Delta.compose(doc, change);
+// [{ type: "insert", value: "Hello", attributes: { bold: true } },
+//  { type: "insert", value: " world" }]
+
+// Compute the difference between two documents
+const a = Delta.insert([], "Hello");
+const b = Delta.insert([], "Hello world");
+
+Delta.diff(a, b);
+// [{ type: "retain", value: 5 },
+//  { type: "insert", value: " world" }]
+```
+
 ## Installation
 
 ::: code-group
