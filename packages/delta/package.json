@@ -1,0 +1,42 @@
+{
+    "name": "@monstermann/delta",
+    "type": "module",
+    "version": "0.0.0",
+    "description": "Functional operational-transform.",
+    "author": "Michael Ostermann <michaelostermann@me.com>",
+    "license": "MIT",
+    "homepage": "https://MichaelOstermann.github.io/delta",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/MichaelOstermann/delta.git"
+    },
+    "bugs": {
+        "url": "https://github.com/MichaelOstermann/delta/issues"
+    },
+    "keywords": [],
+    "sideEffects": false,
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.mts",
+            "import": "./dist/index.mjs"
+        },
+        "./*": "./dist/*"
+    },
+    "main": "./dist/index.mjs",
+    "module": "./dist/index.mjs",
+    "types": "./dist/index.d.mts",
+    "files": [
+        "dist"
+    ],
+    "scripts": {
+        "bundle": "tsdown"
+    },
+    "dependencies": {
+        "@monstermann/dfdl": "^0.1.0",
+        "@monstermann/remmi": "^0.2.0",
+        "fast-diff": "^1.3.0"
+    },
+    "devDependencies": {
+        "@monstermann/unplugin-tree-shake-import-namespaces": "^0.3.0"
+    }
+}
