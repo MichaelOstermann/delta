@@ -1,5 +1,4 @@
 import type { Delta } from "."
-import type { OpAttributes } from "../OpAttributes"
 import { dfdlT } from "@monstermann/dfdl"
 import { endMutations, startMutations } from "@monstermann/remmi"
 
@@ -7,10 +6,10 @@ import { endMutations, startMutations } from "@monstermann/remmi"
  * # batch
  *
  * ```ts
- * function Delta.batch<T>(
- *   ops: Delta<T>,
- *   transform: (delta: Delta<T>) => Delta<T>,
- * ): Delta<T>
+ * function Delta.batch(
+ *   ops: Delta,
+ *   transform: (delta: Delta) => Delta,
+ * ): Delta
  * ```
  *
  * Batches multiple delta operations together for improved performance.
@@ -50,18 +49,12 @@ import { endMutations, startMutations } from "@monstermann/remmi"
  *
  */
 export const batch: {
-    <T extends OpAttributes>(
-        transform: (delta: Delta<NoInfer<T>>) => Delta<NoInfer<T>>
-    ): (ops: Delta<T>) => Delta<T>
-
-    <T extends OpAttributes>(
-        ops: Delta<T>,
-        transform: (delta: Delta<NoInfer<T>>) => Delta<NoInfer<T>>
-    ): Delta<T>
-} = dfdlT(<T extends OpAttributes>(
-    ops: Delta<T>,
-    transform: (delta: Delta<NoInfer<T>>) => Delta<NoInfer<T>>,
-): Delta<T> => {
+    (transform: (delta: Delta) => Delta): (ops: Delta) => Delta
+    (ops: Delta, transform: (delta: Delta) => Delta): Delta
+} = dfdlT((
+    ops: Delta,
+    transform: (delta: Delta) => Delta,
+): Delta => {
     startMutations()
     try {
         return transform(ops)

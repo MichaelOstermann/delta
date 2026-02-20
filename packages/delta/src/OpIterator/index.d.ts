@@ -5,19 +5,18 @@
 // biome-ignore lint: disable
 
 import { create } from "./create.js";
+import { Delta } from "../Delta/index.js";
 import { hasNext } from "./hasNext.js";
 import { next } from "./next.js";
-import { Op } from "../Op/index.js";
-import { OpAttributes } from "../OpAttributes/index.js";
 import { peek } from "./peek.js";
 import { peekLength } from "./peekLength.js";
 import { peekType } from "./peekType.js";
 import { rest } from "./rest.js";
 
-interface OpIterator<T extends OpAttributes> {
+interface OpIterator {
     index: number
     offset: number
-    ops: readonly Op<T>[]
+    ops: Delta
 }
 
 declare namespace OpIterator {

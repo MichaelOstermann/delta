@@ -1,12 +1,12 @@
 import type { Delta } from "."
-import type { OpAttributes } from "../OpAttributes"
 import { dfdlT } from "@monstermann/dfdl"
+import { Op } from "../Op"
 
 /**
  * # length
  *
  * ```ts
- * function Delta.length<T>(ops: Delta<T>): number
+ * function Delta.length(ops: Delta): number
  * ```
  *
  * Returns the total length of the delta (sum of all operation lengths).
@@ -43,10 +43,8 @@ import { dfdlT } from "@monstermann/dfdl"
  *
  */
 export const length: {
-    (): <T extends OpAttributes>(ops: Delta<T>) => number
-    <T extends OpAttributes>(ops: Delta<T>): number
-} = dfdlT(<T extends OpAttributes>(ops: Delta<T>): number => {
-    return ops.reduce((acc, op) => {
-        return acc + (op.type === "insert" ? op.value.length : op.value)
-    }, 0)
+    (): (ops: Delta) => number
+    (ops: Delta): number
+} = dfdlT((ops: Delta): number => {
+    return ops.reduce((acc, op) => acc + Op.length(op), 0)
 }, 1)

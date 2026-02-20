@@ -1,7 +1,7 @@
 # diff
 
 ```ts
-function Delta.diff<T>(a: Delta<T>, b: Delta<T>, cursor?: number): Delta<T>
+function Delta.diff(a: Delta, b: Delta, cursor?: number): Delta
 ```
 
 Computes the difference between two document deltas, returning a delta that transforms `a` into `b`.

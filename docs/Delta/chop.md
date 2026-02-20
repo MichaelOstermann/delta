@@ -1,7 +1,7 @@
 # chop
 
 ```ts
-function Delta.chop<T>(ops: Delta<T>): Delta<T>
+function Delta.chop(ops: Delta): Delta
 ```
 
 Removes a trailing retain operation if it has no attributes.

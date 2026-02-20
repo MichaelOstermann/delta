@@ -1,5 +1,4 @@
 import type { Delta } from "."
-import type { OpAttributes } from "../OpAttributes"
 import { dfdlT } from "@monstermann/dfdl"
 import { cloneArray } from "@monstermann/remmi"
 
@@ -7,7 +6,7 @@ import { cloneArray } from "@monstermann/remmi"
  * # chop
  *
  * ```ts
- * function Delta.chop<T>(ops: Delta<T>): Delta<T>
+ * function Delta.chop(ops: Delta): Delta
  * ```
  *
  * Removes a trailing retain operation if it has no attributes.
@@ -49,9 +48,9 @@ import { cloneArray } from "@monstermann/remmi"
  *
  */
 export const chop: {
-    (): <T extends OpAttributes>(ops: Delta<T>) => Delta<T>
-    <T extends OpAttributes>(ops: Delta<T>): Delta<T>
-} = dfdlT(<T extends OpAttributes>(ops: Delta<T>): Delta<T> => {
+    (): (ops: Delta) => Delta
+    (ops: Delta): Delta
+} = dfdlT((ops: Delta): Delta => {
     const lastOp = ops[ops.length - 1]
     if (lastOp?.type === "retain" && !lastOp.attributes) {
         ops = cloneArray(ops)

@@ -1,12 +1,12 @@
 import type { Delta } from "."
 import { dfdlT } from "@monstermann/dfdl"
-import { OpAttributes } from "../OpAttributes"
+import { isEqual } from "../internals/isEqual"
 
 /**
  * # equals
  *
  * ```ts
- * function Delta.equals<T>(a: Delta<T>, b: Delta<T>): boolean
+ * function Delta.equals(a: Delta, b: Delta): boolean
  * ```
  *
  * Checks if two deltas are equal by comparing their operations and attributes.
@@ -35,25 +35,16 @@ import { OpAttributes } from "../OpAttributes"
  *
  */
 export const equals: {
-    <T extends OpAttributes>(
-        b: Delta<NoInfer<T>>,
-    ): (a: Delta<T>) => boolean
-
-    <T extends OpAttributes>(
-        a: Delta<T>,
-        b: Delta<NoInfer<T>>,
-    ): boolean
-} = dfdlT(<T extends OpAttributes>(
-    a: Delta<T>,
-    b: Delta<NoInfer<T>>,
-): boolean => {
+    (b: Delta): (a: Delta) => boolean
+    (a: Delta, b: Delta): boolean
+} = dfdlT((a: Delta, b: Delta): boolean => {
     if (a.length !== b.length) return false
     for (let i = 0; i < a.length; i++) {
         const aOp = a[i]!
         const bOp = b[i]!
         if (aOp.type !== bOp.type) return false
         if (aOp.value !== bOp.value) return false
-        if (!OpAttributes.isEqual(aOp.attributes, bOp.attributes)) return false
+        if (!isEqual(aOp.attributes, bOp.attributes)) return false
     }
     return true
 }, 2)

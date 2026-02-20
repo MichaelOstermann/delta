@@ -4,7 +4,12 @@ import { namespace } from "@monstermann/barrels-namespace"
 
 export default defineConfig([
     namespace({
-        entries: "./packages/delta/src/Delta",
+        entries: [
+            "./packages/delta/src/Op",
+            "./packages/delta/src/Delta",
+            "./packages/delta/src/OpAttributes",
+            "./packages/delta/src/OpIterator",
+        ],
     }),
     flat({
         entries: "./packages/delta/src",

@@ -1,4 +1,3 @@
-import type { OpAttributes } from "../OpAttributes"
 import { dfdlT } from "@monstermann/dfdl"
 import { endMutations, markAsMutable, startMutations } from "@monstermann/remmi"
 import { Delta } from "."
@@ -7,7 +6,7 @@ import { Delta } from "."
  * # clean
  *
  * ```ts
- * function Delta.clean<T>(ops: Delta<T>): Delta<T>
+ * function Delta.clean(ops: Delta): Delta
  * ```
  *
  * Normalizes the delta by merging consecutive operations of the same type and attributes.
@@ -50,11 +49,11 @@ import { Delta } from "."
  *
  */
 export const clean: {
-    (): <T extends OpAttributes>(ops: Delta<T>) => Delta<T>
-    <T extends OpAttributes>(ops: Delta<T>): Delta<T>
-} = dfdlT(<T extends OpAttributes>(ops: Delta<T>): Delta<T> => {
+    (): (ops: Delta) => Delta
+    (ops: Delta): Delta
+} = dfdlT((ops: Delta): Delta => {
     startMutations()
-    let newOps: Delta<T> = markAsMutable([])
+    let newOps: Delta = markAsMutable([])
     for (const op of ops) newOps = Delta.push(newOps, op)
     endMutations()
     return newOps.length === ops.length ? ops : newOps

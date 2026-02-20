@@ -1,11 +1,11 @@
 # retain
 
 ```ts
-function Delta.retain<T>(
-  ops: Delta<T>,
+function Delta.retain(
+  ops: Delta,
   length: number,
-  attributes?: T | null,
-): Delta<T>
+  attributes?: OpAttributes | null,
+): Delta
 ```
 
 Adds a retain operation to the delta, optionally with attributes to apply formatting.

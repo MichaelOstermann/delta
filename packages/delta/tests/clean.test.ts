@@ -23,7 +23,7 @@ describe("clean()", () => {
     })
 
     it("does not merge inserts with different attributes", () => {
-        const delta: Delta<{ bold?: boolean, italic?: boolean }> = [
+        const delta: Delta = [
             { attributes: { bold: true }, type: "insert", value: "Hello" },
             { attributes: { italic: true }, type: "insert", value: " world" },
         ]

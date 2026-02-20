@@ -1,4 +1,3 @@
-import type { OpAttributes } from "../OpAttributes"
 import { dfdlT } from "@monstermann/dfdl"
 import { Delta } from "."
 
@@ -6,7 +5,7 @@ import { Delta } from "."
  * # concat
  *
  * ```ts
- * function Delta.concat<T>(a: Delta<T>, b: Delta<T>): Delta<T>
+ * function Delta.concat(a: Delta, b: Delta): Delta
  * ```
  *
  * Concatenates two deltas together, merging adjacent operations if possible.
@@ -42,9 +41,9 @@ import { Delta } from "."
  *
  */
 export const concat: {
-    <T extends OpAttributes>(b: Delta<NoInfer<T>>): (a: Delta<T>) => Delta<T>
-    <T extends OpAttributes>(a: Delta<T>, b: Delta<NoInfer<T>>): Delta<T>
-} = dfdlT(<T extends OpAttributes>(a: Delta<T>, b: Delta<NoInfer<T>>): Delta<T> => {
+    (b: Delta): (a: Delta) => Delta
+    (a: Delta, b: Delta): Delta
+} = dfdlT((a: Delta, b: Delta): Delta => {
     if (!b.length) return a
     if (!a.length) return b
     return Delta.push(a, b[0]!).concat(b.slice(1))

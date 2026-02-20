@@ -1,16 +1,15 @@
 import type { OpIterator } from "."
-import type { Op } from "../Op"
-import type { OpAttributes } from "../OpAttributes"
+import { Op } from "../Op"
 
-export function next<T extends OpAttributes>(
-    opIt: OpIterator<T>,
+export function next(
+    opIt: OpIterator,
     length: number = Infinity,
-): Op<T> {
+): Op {
     const nextOp = opIt.ops[opIt.index]
 
     if (nextOp) {
         const offset = opIt.offset
-        const opLength = nextOp.type === "insert" ? nextOp.value.length : nextOp.value
+        const opLength = Op.length(nextOp)
         if (length >= opLength - offset) {
             length = opLength - offset
             opIt.index += 1
@@ -25,7 +24,11 @@ export function next<T extends OpAttributes>(
         if (nextOp.type === "retain") {
             return { attributes: nextOp.attributes, type: "retain", value: length }
         }
-        return { attributes: nextOp.attributes, type: "insert", value: nextOp.value.slice(offset, offset + length) }
+        if (typeof nextOp.value === "string") {
+            return { attributes: nextOp.attributes, type: "insert", value: nextOp.value.slice(offset, offset + length) }
+        }
+        // Embed inserts are atomic (length 1) — return the whole object
+        return { attributes: nextOp.attributes, type: "insert", value: nextOp.value }
     }
 
     return { attributes: undefined, type: "retain", value: Infinity }

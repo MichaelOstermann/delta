@@ -1,10 +1,10 @@
 # batch
 
 ```ts
-function Delta.batch<T>(
-  ops: Delta<T>,
-  transform: (delta: Delta<T>) => Delta<T>,
-): Delta<T>
+function Delta.batch(
+  ops: Delta,
+  transform: (delta: Delta) => Delta,
+): Delta
 ```
 
 Batches multiple delta operations together for improved performance.

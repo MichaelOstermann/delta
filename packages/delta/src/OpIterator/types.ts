@@ -1,8 +1,7 @@
 import type { Delta } from "../Delta"
-import type { OpAttributes } from "../OpAttributes"
 
-export interface OpIterator<T extends OpAttributes> {
+export interface OpIterator {
     index: number
     offset: number
-    ops: Delta<T>
+    ops: Delta
 }

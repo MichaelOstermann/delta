@@ -1,4 +1,4 @@
-import type { NullableOpAttributes, OpAttributes } from "../OpAttributes"
+import type { OpAttributes } from "../OpAttributes"
 import { dfdlT } from "@monstermann/dfdl"
 import { Delta } from "."
 import { hasKeys } from "../internals/hasKeys"
@@ -7,11 +7,11 @@ import { hasKeys } from "../internals/hasKeys"
  * # retain
  *
  * ```ts
- * function Delta.retain<T>(
- *   ops: Delta<T>,
+ * function Delta.retain(
+ *   ops: Delta,
  *   length: number,
- *   attributes?: T | null,
- * ): Delta<T>
+ *   attributes?: OpAttributes | null,
+ * ): Delta
  * ```
  *
  * Adds a retain operation to the delta, optionally with attributes to apply formatting.
@@ -63,21 +63,21 @@ import { hasKeys } from "../internals/hasKeys"
  *
  */
 export const retain: {
-    <T extends OpAttributes>(
+    (
         length: number,
-        attributes?: NullableOpAttributes<NoInfer<T>> | null,
-    ): (ops: Delta<T>) => Delta<T>
+        attributes?: OpAttributes | null,
+    ): (ops: Delta) => Delta
 
-    <T extends OpAttributes>(
-        ops: Delta<T>,
+    (
+        ops: Delta,
         length: number,
-        attributes?: NullableOpAttributes<NoInfer<T>> | null,
-    ): Delta<T>
-} = dfdlT(<T extends OpAttributes>(
-    ops: Delta<T>,
+        attributes?: OpAttributes | null,
+    ): Delta
+} = dfdlT((
+    ops: Delta,
     length: number,
-    attributes?: NullableOpAttributes<NoInfer<T>>,
-): Delta<T> => {
+    attributes?: OpAttributes,
+): Delta => {
     if (!Number.isInteger(length)) return ops
     if (length <= 0) return ops
     return Delta.push(ops, {

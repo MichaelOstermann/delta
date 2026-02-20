@@ -1,11 +1,11 @@
 # insert
 
 ```ts
-function Delta.insert<T>(
-  ops: Delta<T>,
-  content: string,
-  attributes?: T | null,
-): Delta<T>
+function Delta.insert(
+  ops: Delta,
+  content: string | EmbedValue,
+  attributes?: OpAttributes | null,
+): Delta
 ```
 
 Adds an insert operation to the delta.

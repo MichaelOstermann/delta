@@ -1,7 +1,7 @@
 # concat
 
 ```ts
-function Delta.concat<T>(a: Delta<T>, b: Delta<T>): Delta<T>
+function Delta.concat(a: Delta, b: Delta): Delta
 ```
 
 Concatenates two deltas together, merging adjacent operations if possible.

@@ -1,7 +1,7 @@
 # slice
 
 ```ts
-function Delta.slice<T>(ops: Delta<T>, start: number, end?: number): Delta<T>
+function Delta.slice(ops: Delta, start: number, end?: number): Delta
 ```
 
 Returns a portion of the delta from `start` to `end`.

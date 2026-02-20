@@ -13,7 +13,7 @@ export default defineConfig({
     unbundle: true,
     plugins: [treeshake({
         resolve({ importAlias, importName, importPath, propertyName }) {
-            if (["OpAttributes", "OpIterator", "Delta"].includes(importName || "")) {
+            if (["OpAttributes", "OpIterator", "Delta", "Op"].includes(importName || "")) {
                 return `import { ${propertyName} as ${importAlias} } from "${importPath}/${propertyName}.ts"`
             }
             return undefined

@@ -2,7 +2,7 @@
 
 <h1>delta</h1>
 
-![Minified](https://img.shields.io/badge/Minified-16.09_KB-blue?style=flat-square&labelColor=%2315161D&color=%2369a1ff) ![Minzipped](https://img.shields.io/badge/Minzipped-5.15_KB-blue?style=flat-square&labelColor=%2315161D&color=%2369a1ff)
+![Minified](https://img.shields.io/badge/Minified-16.27_KB-blue?style=flat-square&labelColor=%2315161D&color=%2369a1ff) ![Minzipped](https://img.shields.io/badge/Minzipped-5.22_KB-blue?style=flat-square&labelColor=%2315161D&color=%2369a1ff)
 
 **Functional operational-transform.**
 
@@ -10,19 +10,14 @@
 
 </div>
 
-> [!WARNING]
-> Due to the many footguns and pitalls present in collaborative applications based on operational transform, this library should only be used for ad-hoc string manipulation. Please consider using [conflict-free replicated data types](https://en.wikipedia.org/wiki/Conflict-free_replicated_data_type) for serious applications.
-
 ## Differences from quill-delta
 
 This library has been largely ported from [quill-delta](https://github.com/slab/delta), some differences:
 
 - Immutable with optional transient mutations
 - Functional data-first/data-last API acting upon plain arrays
-- Higher fidelity type definitions
 - Operations have been migrated to a monomorphic, tagged union
 - The `delete` operation has been renamed to `remove`, as `delete` is a reserved keyword
-- Support for embeds has been removed
 - Support for nested attributes has been removed
 - Cloning is only done when the data actually changes
 - Deep-cloning has been replaced with shallow-cloning
@@ -76,10 +71,10 @@ bun add @monstermann/delta
 ### batch
 
 ```ts
-function Delta.batch<T>(
-  ops: Delta<T>,
-  transform: (delta: Delta<T>) => Delta<T>,
-): Delta<T>
+function Delta.batch(
+  ops: Delta,
+  transform: (delta: Delta) => Delta,
+): Delta
 ```
 
 Batches multiple delta operations together for improved performance.
@@ -120,7 +115,7 @@ pipe(
 ### chop
 
 ```ts
-function Delta.chop<T>(ops: Delta<T>): Delta<T>
+function Delta.chop(ops: Delta): Delta
 ```
 
 Removes a trailing retain operation if it has no attributes.
@@ -163,7 +158,7 @@ pipe(
 ### clean
 
 ```ts
-function Delta.clean<T>(ops: Delta<T>): Delta<T>
+function Delta.clean(ops: Delta): Delta
 ```
 
 Normalizes the delta by merging consecutive operations of the same type and attributes.
@@ -207,7 +202,7 @@ pipe(
 ### compose
 
 ```ts
-function Delta.compose<T>(a: Delta<T>, b: Delta<T>): Delta<T>
+function Delta.compose(a: Delta, b: Delta): Delta
 ```
 
 Composes two deltas into a single delta that represents applying `a` then `b`.
@@ -252,7 +247,7 @@ pipe(a, Delta.compose(b));
 ### concat
 
 ```ts
-function Delta.concat<T>(a: Delta<T>, b: Delta<T>): Delta<T>
+function Delta.concat(a: Delta, b: Delta): Delta
 ```
 
 Concatenates two deltas together, merging adjacent operations if possible.
@@ -289,7 +284,7 @@ pipe(a, Delta.concat(b));
 ### diff
 
 ```ts
-function Delta.diff<T>(a: Delta<T>, b: Delta<T>, cursor?: number): Delta<T>
+function Delta.diff(a: Delta, b: Delta, cursor?: number): Delta
 ```
 
 Computes the difference between two document deltas, returning a delta that transforms `a` into `b`.
@@ -349,7 +344,7 @@ Delta.diff(a, b, 0);
 ### equals
 
 ```ts
-function Delta.equals<T>(a: Delta<T>, b: Delta<T>): boolean
+function Delta.equals(a: Delta, b: Delta): boolean
 ```
 
 Checks if two deltas are equal by comparing their operations and attributes.
@@ -379,11 +374,11 @@ pipe(a, Delta.equals(b)); // true
 ### insert
 
 ```ts
-function Delta.insert<T>(
-  ops: Delta<T>,
-  content: string,
-  attributes?: T | null,
-): Delta<T>
+function Delta.insert(
+  ops: Delta,
+  content: string | EmbedValue,
+  attributes?: OpAttributes | null,
+): Delta
 ```
 
 Adds an insert operation to the delta.
@@ -418,7 +413,7 @@ pipe(
 ### invert
 
 ```ts
-function Delta.invert<T>(a: Delta<T>, b: Delta<T>): Delta<T>
+function Delta.invert(a: Delta, b: Delta): Delta
 ```
 
 Returns the inverse of a delta against a base document. Applying the inverted delta undoes the original change.
@@ -459,7 +454,7 @@ pipe(change, Delta.invert(base));
 ### length
 
 ```ts
-function Delta.length<T>(ops: Delta<T>): number
+function Delta.length(ops: Delta): number
 ```
 
 Returns the total length of the delta (sum of all operation lengths).
@@ -497,7 +492,7 @@ pipe(
 ### push
 
 ```ts
-function Delta.push<T>(ops: Delta<T>, op: Op<T>): Delta<T>
+function Delta.push(ops: Delta, op: Op): Delta
 ```
 
 Pushes an operation onto the delta, merging with the previous operation if possible.
@@ -534,7 +529,7 @@ pipe(
 ### remove
 
 ```ts
-function Delta.remove<T>(ops: Delta<T>, length: number): Delta<T>
+function Delta.remove(ops: Delta, length: number): Delta
 ```
 
 Adds a remove operation to the delta.
@@ -562,11 +557,11 @@ pipe([], Delta.retain(3), Delta.remove(5));
 ### retain
 
 ```ts
-function Delta.retain<T>(
-  ops: Delta<T>,
+function Delta.retain(
+  ops: Delta,
   length: number,
-  attributes?: T | null,
-): Delta<T>
+  attributes?: OpAttributes | null,
+): Delta
 ```
 
 Adds a retain operation to the delta, optionally with attributes to apply formatting.
@@ -619,7 +614,7 @@ Delta.compose(doc, removeBold);
 ### slice
 
 ```ts
-function Delta.slice<T>(ops: Delta<T>, start: number, end?: number): Delta<T>
+function Delta.slice(ops: Delta, start: number, end?: number): Delta
 ```
 
 Returns a portion of the delta from `start` to `end`.
@@ -670,11 +665,11 @@ pipe(
 ### transform
 
 ```ts
-function Delta.transform<T>(
-  a: Delta<T>,
-  b: Delta<T>,
+function Delta.transform(
+  a: Delta,
+  b: Delta,
   priority?: boolean,
-): Delta<T>
+): Delta
 ```
 
 Transforms delta `b` to account for delta `a` having been applied first. When both deltas insert at the same position, `priority` determines which insert comes first.
@@ -715,4 +710,27 @@ const b = Delta.insert([], "World");
 pipe(a, Delta.transform(b, true));
 // [{ type: "retain", value: 5 },
 //  { type: "insert", value: "World" }]
+```
+
+## Op
+
+### length
+
+```ts
+function Op.length(op: Op): number
+```
+
+Returns the length of a single operation.
+
+For string inserts this is the number of characters. For embed inserts this is always `1`. For retain and remove operations this is the numeric value.
+
+#### Example
+
+```ts
+import { Op } from "@monstermann/delta";
+
+Op.length({ type: "insert", value: "Hello" }); // 5
+Op.length({ type: "insert", value: { image: "..." } }); // 1
+Op.length({ type: "retain", value: 3 }); // 3
+Op.length({ type: "remove", value: 2 }); // 2
 ```

@@ -1,11 +1,11 @@
 # transform
 
 ```ts
-function Delta.transform<T>(
-  a: Delta<T>,
-  b: Delta<T>,
+function Delta.transform(
+  a: Delta,
+  b: Delta,
   priority?: boolean,
-): Delta<T>
+): Delta
 ```
 
 Transforms delta `b` to account for delta `a` having been applied first. When both deltas insert at the same position, `priority` determines which insert comes first.

@@ -1,8 +1,6 @@
-import type { OpAttributes } from "."
-
-export function isEqual<T extends OpAttributes>(
-    a: T | undefined,
-    b: NoInfer<T> | undefined,
+export function isEqual(
+    a: Record<string, unknown> | undefined,
+    b: Record<string, unknown> | undefined,
 ): boolean {
     if (a === b) return true
     if (!a || !b) return false

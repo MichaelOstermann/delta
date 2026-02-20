@@ -1,7 +1,7 @@
-import type { InsertOp } from "../Op"
 import { dfdlT } from "@monstermann/dfdl"
 import { endMutations, markAsMutable, startMutations } from "@monstermann/remmi"
 import { Delta } from "."
+import { Op } from "../Op"
 import { OpAttributes } from "../OpAttributes"
 import { OpIterator } from "../OpIterator"
 
@@ -9,11 +9,11 @@ import { OpIterator } from "../OpIterator"
  * # transform
  *
  * ```ts
- * function Delta.transform<T>(
- *   a: Delta<T>,
- *   b: Delta<T>,
+ * function Delta.transform(
+ *   a: Delta,
+ *   b: Delta,
  *   priority?: boolean,
- * ): Delta<T>
+ * ): Delta
  * ```
  *
  * Transforms delta `b` to account for delta `a` having been applied first. When both deltas insert at the same position, `priority` determines which insert comes first.
@@ -58,34 +58,26 @@ import { OpIterator } from "../OpIterator"
  *
  */
 export const transform: {
-    <T extends OpAttributes>(
-        b: Delta<NoInfer<T>>,
-        priority?: boolean
-    ): (a: Delta<T>) => Delta<T>
-
-    <T extends OpAttributes>(
-        a: Delta<T>,
-        b: Delta<NoInfer<T>>,
-        priority?: boolean
-    ): Delta<T>
-} = dfdlT(<T extends OpAttributes>(
-    a: Delta<T>,
-    b: Delta<NoInfer<T>>,
+    (b: Delta, priority?: boolean): (a: Delta) => Delta
+    (a: Delta, b: Delta, priority?: boolean): Delta
+} = dfdlT((
+    a: Delta,
+    b: Delta,
     priority: boolean = false,
-): Delta<T> => {
+): Delta => {
     const aIter = OpIterator.create(a)
     const bIter = OpIterator.create(b)
 
     startMutations()
-    let ops: Delta<T> = markAsMutable([])
+    let ops: Delta = markAsMutable([])
 
     while (OpIterator.hasNext(aIter) || OpIterator.hasNext(bIter)) {
         if (
             OpIterator.peekType(aIter) === "insert"
             && (priority || OpIterator.peekType(bIter) !== "insert")
         ) {
-            const aOp = OpIterator.next(aIter) as InsertOp<T>
-            ops = Delta.retain(ops, aOp.value.length)
+            const aOp = OpIterator.next(aIter)
+            ops = Delta.retain(ops, Op.length(aOp))
         }
         else if (OpIterator.peekType(bIter) === "insert") {
             ops = Delta.push(ops, OpIterator.next(bIter)!)

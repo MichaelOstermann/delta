@@ -1,13 +1,13 @@
 import type { Delta } from "."
-import type { OpAttributes } from "../OpAttributes"
 import { dfdlT } from "@monstermann/dfdl"
+import { Op } from "../Op"
 import { OpIterator } from "../OpIterator"
 
 /**
  * # slice
  *
  * ```ts
- * function Delta.slice<T>(ops: Delta<T>, start: number, end?: number): Delta<T>
+ * function Delta.slice(ops: Delta, start: number, end?: number): Delta
  * ```
  *
  * Returns a portion of the delta from `start` to `end`.
@@ -57,22 +57,14 @@ import { OpIterator } from "../OpIterator"
  *
  */
 export const slice: {
-    (
-        start: number,
-        end?: number,
-    ): <T extends OpAttributes>(ops: Delta<T>) => Delta<T>
-
-    <T extends OpAttributes>(
-        ops: Delta<T>,
-        start: number,
-        end?: number,
-    ): Delta<T>
-} = dfdlT(<T extends OpAttributes>(
-    ops: Delta<T>,
+    (start: number, end?: number): (ops: Delta) => Delta
+    (ops: Delta, start: number, end?: number): Delta
+} = dfdlT((
+    ops: Delta,
     start: number,
     end: number = Infinity,
-): Delta<T> => {
-    const newOps: Delta<T> = []
+): Delta => {
+    const newOps: Delta = []
     const iter = OpIterator.create(ops)
     let index = 0
     while (index < end && OpIterator.hasNext(iter)) {
@@ -84,7 +76,7 @@ export const slice: {
             nextOp = OpIterator.next(iter, end - index)
             newOps.push(nextOp)
         }
-        index += nextOp.type === "insert" ? nextOp.value.length : nextOp.value
+        index += Op.length(nextOp)
     }
     return newOps
 }, args => typeof args[0] !== "number")

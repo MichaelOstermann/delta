@@ -1,7 +1,7 @@
 # remove
 
 ```ts
-function Delta.remove<T>(ops: Delta<T>, length: number): Delta<T>
+function Delta.remove(ops: Delta, length: number): Delta
 ```
 
 Adds a remove operation to the delta.

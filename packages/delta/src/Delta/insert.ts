@@ -1,4 +1,5 @@
-import type { NullableOpAttributes, OpAttributes } from "../OpAttributes"
+import type { EmbedValue } from "../Op"
+import type { OpAttributes } from "../OpAttributes"
 import { dfdlT } from "@monstermann/dfdl"
 import { Delta } from "."
 import { hasKeys } from "../internals/hasKeys"
@@ -7,11 +8,11 @@ import { hasKeys } from "../internals/hasKeys"
  * # insert
  *
  * ```ts
- * function Delta.insert<T>(
- *   ops: Delta<T>,
- *   content: string,
- *   attributes?: T | null,
- * ): Delta<T>
+ * function Delta.insert(
+ *   ops: Delta,
+ *   content: string | EmbedValue,
+ *   attributes?: OpAttributes | null,
+ * ): Delta
  * ```
  *
  * Adds an insert operation to the delta.
@@ -45,25 +46,25 @@ import { hasKeys } from "../internals/hasKeys"
  *
  */
 export const insert: {
-    <T extends OpAttributes>(
-        content: string,
-        attributes?: NullableOpAttributes<NoInfer<T>> | null,
-    ): (ops: Delta<T>) => Delta<T>
+    (
+        content: string | EmbedValue,
+        attributes?: OpAttributes | null,
+    ): (ops: Delta) => Delta
 
-    <T extends OpAttributes>(
-        ops: Delta<T>,
-        content: string,
-        attributes?: NullableOpAttributes<NoInfer<T>> | null,
-    ): Delta<T>
-} = dfdlT(<T extends OpAttributes>(
-    ops: Delta<T>,
-    content: string,
-    attributes?: NullableOpAttributes<NoInfer<T>>,
-): Delta<T> => {
-    if (!content.length) return ops
+    (
+        ops: Delta,
+        content: string | EmbedValue,
+        attributes?: OpAttributes | null,
+    ): Delta
+} = dfdlT((
+    ops: Delta,
+    content: string | EmbedValue,
+    attributes?: OpAttributes,
+): Delta => {
+    if (typeof content === "string" && !content.length) return ops
     return Delta.push(ops, {
         attributes: attributes && hasKeys(attributes) ? attributes : undefined,
         type: "insert",
         value: content,
     })
-}, args => typeof args[0] !== "string")
+}, args => Array.isArray(args[0]))

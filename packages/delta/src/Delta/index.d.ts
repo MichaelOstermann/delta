@@ -15,14 +15,13 @@ import { insert } from "./insert.js";
 import { invert } from "./invert.js";
 import { length } from "./length.js";
 import { Op } from "../Op/index.js";
-import { OpAttributes } from "../OpAttributes/index.js";
 import { push } from "./push.js";
 import { remove } from "./remove.js";
 import { retain } from "./retain.js";
 import { slice } from "./slice.js";
 import { transform } from "./transform.js";
 
-type Delta<T extends OpAttributes = OpAttributes> = Op<T>[]
+type Delta = Op[]
 
 declare namespace Delta {
     export {

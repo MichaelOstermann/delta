@@ -20,7 +20,7 @@ describe("compose()", () => {
     it("insert + remove", () => {
         const a = Delta.insert([], "A")
         const b = Delta.remove([], 1)
-        const expected: Delta<any>[] = []
+        const expected: Delta = []
         expect(Delta.compose(a, b)).toEqual(expected)
     })
 
@@ -160,6 +160,27 @@ describe("compose()", () => {
         )
         const b = Delta.remove([], 1)
         const expected = pipe([], Delta.insert("B"), Delta.insert("C", { bold: true }))
+        expect(Delta.compose(a, b)).toEqual(expected)
+    })
+
+    it("insert embed + retain applies attributes to embed", () => {
+        const a = Delta.insert([], { embed: 1 }, { src: "http://quilljs.com/image.png" })
+        const b = Delta.retain([], 1, { alt: "logo" })
+        const expected = Delta.insert([], { embed: 1 }, { alt: "logo", src: "http://quilljs.com/image.png" })
+        expect(Delta.compose(a, b)).toEqual(expected)
+    })
+
+    it("retain empty embed (retain(1) with no attributes passes embed through)", () => {
+        const a = Delta.insert([], { embed: 1 })
+        const b = Delta.retain([], 1)
+        const expected = Delta.insert([], { embed: 1 })
+        expect(Delta.compose(a, b)).toEqual(expected)
+    })
+
+    it("remove all embed attributes", () => {
+        const a = Delta.insert([], { embed: 2 }, { bold: true })
+        const b = Delta.retain([], 1, { bold: null })
+        const expected = Delta.insert([], { embed: 2 })
         expect(Delta.compose(a, b)).toEqual(expected)
     })
 

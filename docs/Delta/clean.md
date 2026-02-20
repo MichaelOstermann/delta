@@ -1,7 +1,7 @@
 # clean
 
 ```ts
-function Delta.clean<T>(ops: Delta<T>): Delta<T>
+function Delta.clean(ops: Delta): Delta
 ```
 
 Normalizes the delta by merging consecutive operations of the same type and attributes.

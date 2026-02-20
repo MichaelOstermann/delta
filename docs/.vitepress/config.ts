@@ -25,6 +25,9 @@ export default defineConfig({
             provider: "local",
         },
         sidebar: [
+            { base: "/Op/", text: "Op", items: [
+                { link: "length", text: "length" },
+            ] },
             { base: "/Delta/", text: "Delta", items: [
                 { link: "batch", text: "batch" },
                 { link: "chop", text: "chop" },

@@ -176,4 +176,58 @@ describe("push()", () => {
         )
         expect(delta.length).toEqual(2)
     })
+
+    it("push(op) consecutive embeds with matching attributes are not merged", () => {
+        const delta = pipe(
+            [],
+            Delta.insert({ embed: 1 }, { alt: "Description" }),
+            Delta.push({ attributes: { alt: "Description" }, type: "insert", value: { url: "http://quilljs.com" } }),
+        )
+        expect(delta.length).toEqual(2)
+    })
+})
+
+describe("insert() embed", () => {
+    it("insert(embed)", () => {
+        const delta = Delta.insert([], { embed: 1 })
+        expect(delta.length).toEqual(1)
+        expect(delta[0]).toEqual({ attributes: undefined, type: "insert", value: { embed: 1 } })
+    })
+
+    it("insert(embed, attributes)", () => {
+        const delta = Delta.insert([], { embed: 1 }, { alt: "Quill", url: "http://quilljs.com" })
+        expect(delta.length).toEqual(1)
+        expect(delta[0]).toEqual({
+            attributes: { alt: "Quill", url: "http://quilljs.com" },
+            type: "insert",
+            value: { embed: 1 },
+        })
+    })
+
+    it("insert(embed) with non-integer value", () => {
+        const embed = { url: "http://quilljs.com" }
+        const delta = Delta.insert([], embed, { alt: "Quill" })
+        expect(delta.length).toEqual(1)
+        expect(delta[0]).toEqual({
+            attributes: { alt: "Quill" },
+            type: "insert",
+            value: { url: "http://quilljs.com" },
+        })
+    })
+
+    it("insert(text) after embed+delete does not merge text with embed", () => {
+        const delta = pipe(
+            [],
+            Delta.insert({ embed: 1 }),
+            Delta.remove(1),
+            Delta.insert("a"),
+        )
+        const expected = pipe(
+            [],
+            Delta.insert({ embed: 1 }),
+            Delta.insert("a"),
+            Delta.remove(1),
+        )
+        expect(delta).toEqual(expected)
+    })
 })

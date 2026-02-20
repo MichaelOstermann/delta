@@ -7,13 +7,11 @@
 import { compose } from "./compose.js";
 import { diff } from "./diff.js";
 import { invert } from "./invert.js";
-import { isEqual } from "./isEqual.js";
 import { transform } from "./transform.js";
 
 export const OpAttributes = {
     compose,
     diff,
     invert,
-    isEqual,
     transform,
 }

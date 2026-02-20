@@ -1,7 +1,7 @@
 # invert
 
 ```ts
-function Delta.invert<T>(a: Delta<T>, b: Delta<T>): Delta<T>
+function Delta.invert(a: Delta, b: Delta): Delta
 ```
 
 Returns the inverse of a delta against a base document. Applying the inverted delta undoes the original change.

@@ -2,13 +2,13 @@ import type { Delta } from "."
 import type { Op } from "../Op"
 import { dfdlT } from "@monstermann/dfdl"
 import { cloneArray, endMutations, startMutations } from "@monstermann/remmi"
-import { OpAttributes } from "../OpAttributes"
+import { isEqual } from "../internals/isEqual"
 
 /**
  * # push
  *
  * ```ts
- * function Delta.push<T>(ops: Delta<T>, op: Op<T>): Delta<T>
+ * function Delta.push(ops: Delta, op: Op): Delta
  * ```
  *
  * Pushes an operation onto the delta, merging with the previous operation if possible.
@@ -44,18 +44,12 @@ import { OpAttributes } from "../OpAttributes"
  *
  */
 export const push: {
-    <T extends OpAttributes>(
-        op: Op<NoInfer<T>>,
-    ): (ops: Delta<T>) => Delta<T>
-
-    <T extends OpAttributes>(
-        ops: Delta<T>,
-        op: Op<NoInfer<T>>,
-    ): Delta<T>
-} = dfdlT(<T extends OpAttributes>(
-    ops: Delta<T>,
-    op: Op<NoInfer<T>>,
-): Delta<T> => {
+    (op: Op): (ops: Delta) => Delta
+    (ops: Delta, op: Op): Delta
+} = dfdlT((
+    ops: Delta,
+    op: Op,
+): Delta => {
     if (!ops.length) return [op]
 
     const length = ops.length
@@ -78,12 +72,16 @@ export const push: {
         return copy
     }
 
-    if (lastOp.type === "insert" && op.type === "insert" && OpAttributes.isEqual(lastOp.attributes, op.attributes)) {
+    if (
+        lastOp.type === "insert" && op.type === "insert"
+        && typeof lastOp.value === "string" && typeof op.value === "string"
+        && isEqual(lastOp.attributes, op.attributes)
+    ) {
         copy[length - 1] = { attributes: op.attributes, type: "insert", value: lastOp.value + op.value }
         return copy
     }
 
-    if (lastOp.type === "retain" && op.type === "retain" && OpAttributes.isEqual(lastOp.attributes, op.attributes)) {
+    if (lastOp.type === "retain" && op.type === "retain" && isEqual(lastOp.attributes, op.attributes)) {
         copy[length - 1] = { attributes: op.attributes, type: "retain", value: lastOp.value + op.value }
         return copy
     }

@@ -8,7 +8,7 @@ import { OpIterator } from "../OpIterator"
  * # compose
  *
  * ```ts
- * function Delta.compose<T>(a: Delta<T>, b: Delta<T>): Delta<T>
+ * function Delta.compose(a: Delta, b: Delta): Delta
  * ```
  *
  * Composes two deltas into a single delta that represents applying `a` then `b`.
@@ -52,24 +52,15 @@ import { OpIterator } from "../OpIterator"
  *
  */
 export const compose: {
-    <T extends OpAttributes>(
-        b: Delta<NoInfer<T>>,
-    ): (a: Delta<T>) => Delta<T>
-
-    <T extends OpAttributes>(
-        a: Delta<T>,
-        b: Delta<NoInfer<T>>,
-    ): Delta<T>
-} = dfdlT(<T extends OpAttributes>(
-    a: Delta<T>,
-    b: Delta<NoInfer<T>>,
-): Delta<T> => {
+    (b: Delta): (a: Delta) => Delta
+    (a: Delta, b: Delta): Delta
+} = dfdlT((a: Delta, b: Delta): Delta => {
     const aIter = OpIterator.create(a)
     const bIter = OpIterator.create(b)
     const bHead = OpIterator.peek(bIter)
 
     startMutations()
-    let ops: Delta<T> = markAsMutable([])
+    let ops: Delta = markAsMutable([])
 
     if (bHead?.type === "retain" && bHead.attributes == null) {
         let bRetain = bHead.value

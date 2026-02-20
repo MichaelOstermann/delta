@@ -1,7 +1,7 @@
 # equals
 
 ```ts
-function Delta.equals<T>(a: Delta<T>, b: Delta<T>): boolean
+function Delta.equals(a: Delta, b: Delta): boolean
 ```
 
 Checks if two deltas are equal by comparing their operations and attributes.

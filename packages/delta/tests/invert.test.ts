@@ -39,6 +39,24 @@ describe("invert()", () => {
         expect(Delta.compose(Delta.compose(base, delta), inverted)).toEqual(base)
     })
 
+    it("insert embed inverts to remove(1)", () => {
+        const delta = pipe([], Delta.retain(2), Delta.insert({ embed: 1 }))
+        const base = Delta.insert([], "12")
+        const expected = pipe([], Delta.retain(2), Delta.remove(1))
+        const inverted = Delta.invert(delta, base)
+        expect(expected).toEqual(inverted)
+        expect(Delta.compose(Delta.compose(base, delta), inverted)).toEqual(base)
+    })
+
+    it("retain(1, attrs) over embed base inverts attrs", () => {
+        const base = Delta.insert([], { embed: 1 }, { bold: true })
+        const delta = Delta.retain([], 1, { italic: true })
+        const expected = Delta.retain([], 1, { italic: null })
+        const inverted = Delta.invert(delta, base)
+        expect(expected).toEqual(inverted)
+        expect(Delta.compose(Delta.compose(base, delta), inverted)).toEqual(base)
+    })
+
     it("combined", () => {
         const delta = pipe(
             [],

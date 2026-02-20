@@ -6,12 +6,12 @@ aside: true
 
 <Badge type="info" class="size">
     <span>Minified</span>
-    <span>16.09 KB</span>
+    <span>16.27 KB</span>
 </Badge>
 
 <Badge type="info" class="size">
     <span>Minzipped</span>
-    <span>5.15 KB</span>
+    <span>5.22 KB</span>
 </Badge>
 
 **Functional operational-transform.**
@@ -25,10 +25,8 @@ This library has been largely ported from [quill-delta](https://github.com/slab/
 
 - Immutable with optional transient mutations
 - Functional data-first/data-last API acting upon plain arrays
-- Higher fidelity type definitions
 - Operations have been migrated to a monomorphic, tagged union
 - The `delete` operation has been renamed to `remove`, as `delete` is a reserved keyword
-- Support for embeds has been removed
 - Support for nested attributes has been removed
 - Cloning is only done when the data actually changes
 - Deep-cloning has been replaced with shallow-cloning

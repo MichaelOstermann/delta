@@ -1,13 +1,14 @@
 import { dfdlT } from "@monstermann/dfdl"
 import { endMutations, markAsMutable, startMutations } from "@monstermann/remmi"
 import { Delta } from "."
+import { Op } from "../Op"
 import { OpAttributes } from "../OpAttributes"
 
 /**
  * # invert
  *
  * ```ts
- * function Delta.invert<T>(a: Delta<T>, b: Delta<T>): Delta<T>
+ * function Delta.invert(a: Delta, b: Delta): Delta
  * ```
  *
  * Returns the inverse of a delta against a base document. Applying the inverted delta undoes the original change.
@@ -47,25 +48,19 @@ import { OpAttributes } from "../OpAttributes"
  *
  */
 export const invert: {
-    <T extends OpAttributes>(
-        b: Delta<NoInfer<T>>,
-    ): (a: Delta<T>) => Delta<T>
-
-    <T extends OpAttributes>(
-        a: Delta<T>,
-        b: Delta<NoInfer<T>>,
-    ): Delta<T>
-} = dfdlT(<T extends OpAttributes>(
-    a: Delta<T>,
-    b: Delta<NoInfer<T>>,
-): Delta<T> => {
+    (b: Delta): (a: Delta) => Delta
+    (a: Delta, b: Delta): Delta
+} = dfdlT((
+    a: Delta,
+    b: Delta,
+): Delta => {
     startMutations()
-    let newOps: Delta<T> = markAsMutable([])
+    let newOps: Delta = markAsMutable([])
 
     let baseIndex = 0
     for (const aOp of a) {
         if (aOp.type === "insert") {
-            newOps = Delta.remove(newOps, aOp.value.length)
+            newOps = Delta.remove(newOps, Op.length(aOp))
         }
         else if (aOp.type === "retain" && aOp.attributes == null) {
             newOps = Delta.retain(newOps, aOp.value)
@@ -78,7 +73,7 @@ export const invert: {
                     newOps = Delta.push(newOps, bOp)
                 }
                 else if (aOp.attributes) {
-                    const bOpLength = bOp.type === "insert" ? bOp.value.length : bOp.value
+                    const bOpLength = Op.length(bOp)
                     newOps = Delta.retain(newOps, bOpLength, OpAttributes.invert(aOp.attributes, bOp.attributes))
                 }
             }

@@ -1,7 +1,7 @@
 # push
 
 ```ts
-function Delta.push<T>(ops: Delta<T>, op: Op<T>): Delta<T>
+function Delta.push(ops: Delta, op: Op): Delta
 ```
 
 Pushes an operation onto the delta, merging with the previous operation if possible.

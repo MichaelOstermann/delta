@@ -40,14 +40,14 @@ describe("transform()", () => {
     it("remove + retain", () => {
         const a = Delta.remove([], 1)
         const b = Delta.retain([], 1, { bold: true, color: "red" })
-        const expected: Delta<any>[] = []
+        const expected: Delta = []
         expect(Delta.transform(a, b, true)).toEqual(expected)
     })
 
     it("remove + remove", () => {
         const a = Delta.remove([], 1)
         const b = Delta.remove([], 1)
-        const expected: Delta<any>[] = []
+        const expected: Delta = []
         expect(Delta.transform(a, b, true)).toEqual(expected)
     })
 
@@ -62,7 +62,7 @@ describe("transform()", () => {
         const a = Delta.retain([], 1, { color: "blue" })
         const b = Delta.retain([], 1, { bold: true, color: "red" })
         const expected1 = Delta.retain([], 1, { bold: true })
-        const expected2: Delta<any>[] = []
+        const expected2: Delta = []
         expect(Delta.transform(a, b, true)).toEqual(expected1)
         expect(Delta.transform(b, a, true)).toEqual(expected2)
     })
@@ -128,9 +128,29 @@ describe("transform()", () => {
         const a = pipe([], Delta.retain(2), Delta.remove(1))
         const b = Delta.remove([], 3)
         const expected1 = Delta.remove([], 2)
-        const expected2: Delta<any>[] = []
+        const expected2: Delta = []
         expect(Delta.transform(a, b, false)).toEqual(expected1)
         expect(Delta.transform(b, a, false)).toEqual(expected2)
+    })
+
+    it("insert embed + insert (priority) shifts insert by 1", () => {
+        const a = Delta.insert([], { embed: 1 })
+        const b = Delta.insert([], "B")
+        const expected1 = pipe([], Delta.retain(1), Delta.insert("B"))
+        const expected2 = Delta.insert([], "B")
+        expect(Delta.transform(a, b, true)).toEqual(expected1)
+        expect(Delta.transform(a, b, false)).toEqual(expected2)
+    })
+
+    it("insert embed + retain shifts retain by 1", () => {
+        const a = Delta.insert([], { embed: 1 })
+        const b = Delta.retain([], 1, { bold: true, color: "red" })
+        const expected = pipe(
+            [],
+            Delta.retain(1),
+            Delta.retain(1, { bold: true, color: "red" }),
+        )
+        expect(Delta.transform(a, b, true)).toEqual(expected)
     })
 
     it("immutability", () => {

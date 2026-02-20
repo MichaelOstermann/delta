@@ -1,7 +1,6 @@
 import type { OpIterator } from "."
-import type { OpAttributes } from "../OpAttributes"
 import { peekLength } from "./peekLength"
 
-export function hasNext<T extends OpAttributes>(opIt: OpIterator<T>): boolean {
+export function hasNext(opIt: OpIterator): boolean {
     return peekLength(opIt) < Infinity
 }

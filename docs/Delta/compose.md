@@ -1,7 +1,7 @@
 # compose
 
 ```ts
-function Delta.compose<T>(a: Delta<T>, b: Delta<T>): Delta<T>
+function Delta.compose(a: Delta, b: Delta): Delta
 ```
 
 Composes two deltas into a single delta that represents applying `a` then `b`.

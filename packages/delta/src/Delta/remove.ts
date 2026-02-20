@@ -1,4 +1,3 @@
-import type { OpAttributes } from "../OpAttributes"
 import { dfdlT } from "@monstermann/dfdl"
 import { Delta } from "."
 
@@ -6,7 +5,7 @@ import { Delta } from "."
  * # remove
  *
  * ```ts
- * function Delta.remove<T>(ops: Delta<T>, length: number): Delta<T>
+ * function Delta.remove(ops: Delta, length: number): Delta
  * ```
  *
  * Adds a remove operation to the delta.
@@ -33,18 +32,12 @@ import { Delta } from "."
  *
  */
 export const remove: {
-    <T extends OpAttributes>(
-        length: number,
-    ): (ops: Delta<T>) => Delta<T>
-
-    <T extends OpAttributes>(
-        ops: Delta<T>,
-        length: number,
-    ): Delta<T>
-} = dfdlT(<T extends OpAttributes>(
-    ops: Delta<T>,
+    (length: number): (ops: Delta) => Delta
+    (ops: Delta, length: number): Delta
+} = dfdlT((
+    ops: Delta,
     length: number,
-): Delta<T> => {
+): Delta => {
     if (!Number.isInteger(length)) return ops
     if (length <= 0) return ops
     return Delta.push(ops, { attributes: undefined, type: "remove", value: length })

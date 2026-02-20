@@ -1,7 +1,7 @@
 # length
 
 ```ts
-function Delta.length<T>(ops: Delta<T>): number
+function Delta.length(ops: Delta): number
 ```
 
 Returns the total length of the delta (sum of all operation lengths).
