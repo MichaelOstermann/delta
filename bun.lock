@@ -5,7 +5,7 @@
     "": {
       "devDependencies": {
         "@monstermann/barrels": "^0.4.0",
-        "@monstermann/barrels-flat": "^0.3.0",
+        "@monstermann/barrels-flat": "^0.4.0",
         "@monstermann/barrels-namespace": "^0.3.0",
         "@monstermann/eslint-config": "^0.7.0",
         "@monstermann/tsconfig": "^0.0.0",
@@ -260,7 +260,7 @@
 
     "@monstermann/barrels": ["@monstermann/barrels@0.4.0", "", { "dependencies": { "@henrygd/queue": "^1.0.7", "@types/node": "^25.0.0", "chokidar": "^5.0.0", "gunshi": "^0.29.0", "ignore": "^7.0.5", "oxc-parser": "^0.101.0", "oxc-resolver": "^11.5.2", "oxc-walker": "^0.6.0", "picocolors": "^1.1.1", "tinyglobby": "^0.2.14", "tsconfck": "^3.1.6", "unconfig": "^7.3.2", "unplugin-utils": "^0.3.0" }, "bin": { "barrels": "dist/cli.mjs" } }, "sha512-pvJR4wb7XHWVGEWo1eT2EcFhkNomAaAhZVjqQjSUPLZzz2jJk33J6b2wJdeg/A+RnyIejU/mTIQBp45XdjIXiw=="],
 
-    "@monstermann/barrels-flat": ["@monstermann/barrels-flat@0.3.1", "", { "dependencies": { "@monstermann/barrels": "0.3.1", "@monstermann/dfdl": "^0.1.0", "unplugin-utils": "^0.3.0" } }, "sha512-Wf96IeiwRW/Kc/xzdYJzj85bAOnVI6XQGalSXXVnMJ7UFjDEdkhnkGkfmLd83s5N6AWn8nfSQ1Njb813IL7ASw=="],
+    "@monstermann/barrels-flat": ["@monstermann/barrels-flat@0.4.0", "", { "dependencies": { "@monstermann/barrels": "0.4.0", "@monstermann/dfdl": "^0.1.0", "unplugin-utils": "^0.3.0" } }, "sha512-sfk/SGFEVjzNP74pzxq10fGc3klUvVzi864zTLuJ8HtkfhyESfl0Xo/TYyMOymeag4w/nAtaWl4GBkmjD8qmrA=="],
 
     "@monstermann/barrels-namespace": ["@monstermann/barrels-namespace@0.3.1", "", { "dependencies": { "@monstermann/barrels": "0.3.1", "@monstermann/dfdl": "^0.1.0", "oxc-walker": "^0.6.0", "unplugin-utils": "^0.3.0" } }, "sha512-tcFcTBvNsJSQBIb7u4ph4d6YeaRFu+9IF2zXyhSsdL/XAc1mlbIv71VWpJBqV1pLz1LOWjV+wHNxbmTLx+nZZQ=="],
 
@@ -1444,8 +1444,6 @@
 
     "@jridgewell/trace-mapping/@jridgewell/sourcemap-codec": ["@jridgewell/sourcemap-codec@1.5.0", "", {}, "sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ=="],
 
-    "@monstermann/barrels-flat/@monstermann/barrels": ["@monstermann/barrels@0.3.1", "", { "dependencies": { "@henrygd/queue": "^1.0.7", "@types/node": "^24.0.13", "chokidar": "^4.0.3", "gunshi": "^0.27.0-alpha.8", "ignore": "^7.0.5", "oxc-parser": "^0.101.0", "oxc-resolver": "^11.5.2", "oxc-walker": "^0.6.0", "picocolors": "^1.1.1", "tinyglobby": "^0.2.14", "tsconfck": "^3.1.6", "unconfig": "^7.3.2", "unplugin-utils": "^0.3.0" }, "bin": { "barrels": "dist/cli.mjs" } }, "sha512-QbqrGIf5HuZr9OfVuPLXtvbXBBpDMWPjvKS2o5fWYbEcJYyk49fh9nSZg7rOaTi5l63NQTPt8Ra4zkls/GEucQ=="],
-
     "@monstermann/barrels-namespace/@monstermann/barrels": ["@monstermann/barrels@0.3.1", "", { "dependencies": { "@henrygd/queue": "^1.0.7", "@types/node": "^24.0.13", "chokidar": "^4.0.3", "gunshi": "^0.27.0-alpha.8", "ignore": "^7.0.5", "oxc-parser": "^0.101.0", "oxc-resolver": "^11.5.2", "oxc-walker": "^0.6.0", "picocolors": "^1.1.1", "tinyglobby": "^0.2.14", "tsconfck": "^3.1.6", "unconfig": "^7.3.2", "unplugin-utils": "^0.3.0" }, "bin": { "barrels": "dist/cli.mjs" } }, "sha512-QbqrGIf5HuZr9OfVuPLXtvbXBBpDMWPjvKS2o5fWYbEcJYyk49fh9nSZg7rOaTi5l63NQTPt8Ra4zkls/GEucQ=="],
 
     "@napi-rs/wasm-runtime/@emnapi/core": ["@emnapi/core@1.7.1", "", { "dependencies": { "@emnapi/wasi-threads": "1.1.0", "tslib": "^2.4.0" } }, "sha512-o1uhUASyo921r2XtHYOHy7gdkGLge8ghBEQHMWmyJFoXlpU58kIrhhN3w26lpQb6dspetweapMn2CSNwQ8I4wg=="],
@@ -1640,14 +1638,6 @@
 
     "@babel/traverse/@babel/types/@babel/helper-validator-identifier": ["@babel/helper-validator-identifier@7.27.1", "", {}, "sha512-D2hP9eA+Sqx1kBZgzxZh0y1trbuU+JoDkiEwqhQ36nodYqJwyEIhPSdMNd7lOm/4io72luTPWH20Yda0xOuUow=="],
 
-    "@monstermann/barrels-flat/@monstermann/barrels/@types/node": ["@types/node@24.10.8", "", { "dependencies": { "undici-types": "~7.16.0" } }, "sha512-r0bBaXu5Swb05doFYO2kTWHMovJnNVbCsII0fhesM8bNRlLhXIuckley4a2DaD+vOdmm5G+zGkQZAPZsF80+YQ=="],
-
-    "@monstermann/barrels-flat/@monstermann/barrels/chokidar": ["chokidar@4.0.3", "", { "dependencies": { "readdirp": "^4.0.1" } }, "sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA=="],
-
-    "@monstermann/barrels-flat/@monstermann/barrels/gunshi": ["gunshi@0.27.5", "", { "dependencies": { "args-tokens": "^0.23.0" } }, "sha512-ExdnmI90hQ/eR1wnUc5rVom+K16F1hSpbYrplpt6rrJhXLprVGK9/E63bk7Rju27hAqc3WvpCa8PeY95R165fw=="],
-
-    "@monstermann/barrels-flat/@monstermann/barrels/tinyglobby": ["tinyglobby@0.2.15", "", { "dependencies": { "fdir": "^6.5.0", "picomatch": "^4.0.3" } }, "sha512-j2Zq4NyQYG5XMST4cbs02Ak8iJUdxRM0XI5QyxXuZOzKOINmWurp3smXu3y5wDcJrptwpSjgXHzIQxR0omXljQ=="],
-
     "@monstermann/barrels-namespace/@monstermann/barrels/@types/node": ["@types/node@24.10.8", "", { "dependencies": { "undici-types": "~7.16.0" } }, "sha512-r0bBaXu5Swb05doFYO2kTWHMovJnNVbCsII0fhesM8bNRlLhXIuckley4a2DaD+vOdmm5G+zGkQZAPZsF80+YQ=="],
 
     "@monstermann/barrels-namespace/@monstermann/barrels/chokidar": ["chokidar@4.0.3", "", { "dependencies": { "readdirp": "^4.0.1" } }, "sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA=="],
@@ -1715,12 +1705,6 @@
     "@babel/traverse/@babel/generator/@jridgewell/gen-mapping/@jridgewell/sourcemap-codec": ["@jridgewell/sourcemap-codec@1.5.0", "", {}, "sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ=="],
 
     "@babel/traverse/@babel/generator/@jridgewell/trace-mapping/@jridgewell/sourcemap-codec": ["@jridgewell/sourcemap-codec@1.5.0", "", {}, "sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ=="],
-
-    "@monstermann/barrels-flat/@monstermann/barrels/@types/node/undici-types": ["undici-types@7.16.0", "", {}, "sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw=="],
-
-    "@monstermann/barrels-flat/@monstermann/barrels/chokidar/readdirp": ["readdirp@4.1.2", "", {}, "sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg=="],
-
-    "@monstermann/barrels-flat/@monstermann/barrels/tinyglobby/picomatch": ["picomatch@4.0.3", "", {}, "sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q=="],
 
     "@monstermann/barrels-namespace/@monstermann/barrels/@types/node/undici-types": ["undici-types@7.16.0", "", {}, "sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw=="],
 
