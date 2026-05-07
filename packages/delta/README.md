@@ -513,11 +513,7 @@ import { Delta } from "@monstermann/delta";
 pipe([], Delta.push({ insert: "Hello" }));
 // [{ insert: "Hello" }]
 
-pipe(
-    [],
-    Delta.push({ insert: "Hello" }),
-    Delta.push({ insert: " world" }),
-);
+pipe([], Delta.push({ insert: "Hello" }), Delta.push({ insert: " world" }));
 // [{ insert: "Hello world" }]
 ```
 

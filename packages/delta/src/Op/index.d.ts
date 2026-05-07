@@ -34,8 +34,8 @@ declare namespace Op {
 
 export {
     Op,
+    DeleteOp,
     EmbedValue,
     InsertOp,
-    DeleteOp,
     RetainOp,
 }

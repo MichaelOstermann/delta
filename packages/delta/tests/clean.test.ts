@@ -4,28 +4,28 @@ import { Delta } from "../src/Delta"
 describe("clean()", () => {
     it("merges consecutive inserts with same attributes", () => {
         const delta = [
-            { insert: "Hello" as const, attributes: undefined },
-            { insert: " world" as const, attributes: undefined },
+            { attributes: undefined, insert: "Hello" as const },
+            { attributes: undefined, insert: " world" as const },
         ]
         expect(Delta.clean(delta)).toEqual([
-            { insert: "Hello world", attributes: undefined },
+            { attributes: undefined, insert: "Hello world" },
         ])
     })
 
     it("merges consecutive inserts with matching attributes", () => {
         const delta = [
-            { insert: "Hello" as const, attributes: { bold: true } },
-            { insert: " world" as const, attributes: { bold: true } },
+            { attributes: { bold: true }, insert: "Hello" as const },
+            { attributes: { bold: true }, insert: " world" as const },
         ]
         expect(Delta.clean(delta)).toEqual([
-            { insert: "Hello world", attributes: { bold: true } },
+            { attributes: { bold: true }, insert: "Hello world" },
         ])
     })
 
     it("does not merge inserts with different attributes", () => {
         const delta: Delta = [
-            { insert: "Hello", attributes: { bold: true } },
-            { insert: " world", attributes: { italic: true } },
+            { attributes: { bold: true }, insert: "Hello" },
+            { attributes: { italic: true }, insert: " world" },
         ]
         expect(Delta.clean(delta)).toEqual(delta)
     })
@@ -42,11 +42,11 @@ describe("clean()", () => {
 
     it("merges consecutive retains with same attributes", () => {
         const delta = [
-            { retain: 3 as const, attributes: { bold: true } },
-            { retain: 5 as const, attributes: { bold: true } },
+            { attributes: { bold: true }, retain: 3 as const },
+            { attributes: { bold: true }, retain: 5 as const },
         ]
         expect(Delta.clean(delta)).toEqual([
-            { retain: 8, attributes: { bold: true } },
+            { attributes: { bold: true }, retain: 8 },
         ])
     })
 

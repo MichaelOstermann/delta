@@ -74,12 +74,12 @@ export const push: {
         && typeof lastOp.insert === "string" && typeof op.insert === "string"
         && isEqual(lastOp.attributes, op.attributes)
     ) {
-        copy[length - 1] = { insert: lastOp.insert + op.insert, attributes: op.attributes }
+        copy[length - 1] = { attributes: op.attributes, insert: lastOp.insert + op.insert }
         return copy
     }
 
     if ("retain" in lastOp && "retain" in op && isEqual(lastOp.attributes, op.attributes)) {
-        copy[length - 1] = { retain: lastOp.retain + op.retain, attributes: op.attributes }
+        copy[length - 1] = { attributes: op.attributes, retain: lastOp.retain + op.retain }
         return copy
     }
 

@@ -3,15 +3,15 @@ import { Op } from "../src/Op"
 
 describe("Op.length()", () => {
     it("insert text", () => {
-        expect(Op.length({ insert: "text", attributes: undefined })).toEqual(4)
+        expect(Op.length({ attributes: undefined, insert: "text" })).toEqual(4)
     })
 
     it("insert embed", () => {
-        expect(Op.length({ insert: { embed: 2 }, attributes: undefined })).toEqual(1)
+        expect(Op.length({ attributes: undefined, insert: { embed: 2 } })).toEqual(1)
     })
 
     it("retain", () => {
-        expect(Op.length({ retain: 2, attributes: undefined })).toEqual(2)
+        expect(Op.length({ attributes: undefined, retain: 2 })).toEqual(2)
     })
 
     it("remove", () => {

@@ -81,7 +81,7 @@ export const retain: {
     if (!Number.isInteger(length)) return ops
     if (length <= 0) return ops
     return Delta.push(ops, {
-        retain: length,
         attributes: attributes && hasKeys(attributes) ? attributes : undefined,
+        retain: length,
     })
 }, args => typeof args[0] !== "number")

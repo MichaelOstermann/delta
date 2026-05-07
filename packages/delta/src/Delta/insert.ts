@@ -63,7 +63,7 @@ export const insert: {
 ): Delta => {
     if (typeof content === "string" && !content.length) return ops
     return Delta.push(ops, {
-        insert: content,
         attributes: attributes && hasKeys(attributes) ? attributes : undefined,
+        insert: content,
     })
 }, args => Array.isArray(args[0]))

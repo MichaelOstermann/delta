@@ -22,14 +22,14 @@ export function next(
             return { delete: length }
         }
         if ("retain" in nextOp) {
-            return { retain: length, attributes: nextOp.attributes }
+            return { attributes: nextOp.attributes, retain: length }
         }
         if (typeof nextOp.insert === "string") {
-            return { insert: nextOp.insert.slice(offset, offset + length), attributes: nextOp.attributes }
+            return { attributes: nextOp.attributes, insert: nextOp.insert.slice(offset, offset + length) }
         }
         // Embed inserts are atomic (length 1) — return the whole object
-        return { insert: nextOp.insert, attributes: nextOp.attributes }
+        return { attributes: nextOp.attributes, insert: nextOp.insert }
     }
 
-    return { retain: Infinity, attributes: undefined }
+    return { attributes: undefined, retain: Infinity }
 }

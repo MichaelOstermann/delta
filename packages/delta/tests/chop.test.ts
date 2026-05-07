@@ -6,15 +6,15 @@ describe("chop()", () => {
     it("removes trailing retain without attributes", () => {
         const delta = pipe([], Delta.insert("Hello"), Delta.retain(5))
         expect(Delta.chop(delta)).toEqual([
-            { insert: "Hello", attributes: undefined },
+            { attributes: undefined, insert: "Hello" },
         ])
     })
 
     it("keeps trailing retain with attributes", () => {
         const delta = pipe([], Delta.insert("Hello"), Delta.retain(5, { bold: true }))
         expect(Delta.chop(delta)).toEqual([
-            { insert: "Hello", attributes: undefined },
-            { retain: 5, attributes: { bold: true } },
+            { attributes: undefined, insert: "Hello" },
+            { attributes: { bold: true }, retain: 5 },
         ])
     })
 

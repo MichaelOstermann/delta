@@ -44,12 +44,12 @@ describe("equals()", () => {
 
     it("compares multiple operations", () => {
         const a = [
-            { insert: "Hello" as const, attributes: { bold: true } },
-            { retain: 5 as const, attributes: undefined },
+            { attributes: { bold: true }, insert: "Hello" as const },
+            { attributes: undefined, retain: 5 as const },
         ]
         const b = [
-            { insert: "Hello" as const, attributes: { bold: true } },
-            { retain: 5 as const, attributes: undefined },
+            { attributes: { bold: true }, insert: "Hello" as const },
+            { attributes: undefined, retain: 5 as const },
         ]
         expect(Delta.equals(a, b)).toBe(true)
     })

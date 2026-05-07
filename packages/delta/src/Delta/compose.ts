@@ -90,14 +90,14 @@ export const compose: {
             if ("retain" in bOp) {
                 if ("retain" in aOp) {
                     ops = Delta.push(ops, {
-                        retain: length,
                         attributes: OpAttributes.compose(aOp.attributes, bOp.attributes, true),
+                        retain: length,
                     })
                 }
                 else if ("insert" in aOp) {
                     ops = Delta.push(ops, {
-                        insert: aOp.insert,
                         attributes: OpAttributes.compose(aOp.attributes, bOp.attributes),
+                        insert: aOp.insert,
                     })
                 }
             }

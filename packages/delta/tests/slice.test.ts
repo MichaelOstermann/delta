@@ -6,21 +6,21 @@ describe("slice()", () => {
     it("slices from start", () => {
         const delta = Delta.insert([], "Hello world")
         expect(Delta.slice(delta, 0, 5)).toEqual([
-            { insert: "Hello", attributes: undefined },
+            { attributes: undefined, insert: "Hello" },
         ])
     })
 
     it("slices from middle", () => {
         const delta = Delta.insert([], "Hello world")
         expect(Delta.slice(delta, 6)).toEqual([
-            { insert: "world", attributes: undefined },
+            { attributes: undefined, insert: "world" },
         ])
     })
 
     it("slices with start and end", () => {
         const delta = Delta.insert([], "Hello world")
         expect(Delta.slice(delta, 2, 8)).toEqual([
-            { insert: "llo wo", attributes: undefined },
+            { attributes: undefined, insert: "llo wo" },
         ])
     })
 
@@ -31,8 +31,8 @@ describe("slice()", () => {
             Delta.insert(" world", { italic: true }),
         )
         expect(Delta.slice(delta, 3, 8)).toEqual([
-            { insert: "lo", attributes: { bold: true } },
-            { insert: " wo", attributes: { italic: true } },
+            { attributes: { bold: true }, insert: "lo" },
+            { attributes: { italic: true }, insert: " wo" },
         ])
     })
 

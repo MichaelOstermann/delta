@@ -7,7 +7,7 @@ describe("concat()", () => {
         const a = Delta.insert([], "Hello")
         const b = Delta.insert([], " world")
         expect(Delta.concat(a, b)).toEqual([
-            { insert: "Hello world", attributes: undefined },
+            { attributes: undefined, insert: "Hello world" },
         ])
     })
 
@@ -15,8 +15,8 @@ describe("concat()", () => {
         const a = Delta.insert([], "Hello", { bold: true })
         const b = Delta.insert([], " world", { italic: true })
         expect(Delta.concat(a, b)).toEqual([
-            { insert: "Hello", attributes: { bold: true } },
-            { insert: " world", attributes: { italic: true } },
+            { attributes: { bold: true }, insert: "Hello" },
+            { attributes: { italic: true }, insert: " world" },
         ])
     })
 
@@ -34,7 +34,7 @@ describe("concat()", () => {
         const a = Delta.insert([], "Hello")
         const b = Delta.remove([], 3)
         expect(Delta.concat(a, b)).toEqual([
-            { insert: "Hello", attributes: undefined },
+            { attributes: undefined, insert: "Hello" },
             { delete: 3 },
         ])
     })
@@ -43,8 +43,8 @@ describe("concat()", () => {
         const a = Delta.insert([], "Hello")
         const b = Delta.retain([], 5, { bold: true })
         expect(Delta.concat(a, b)).toEqual([
-            { insert: "Hello", attributes: undefined },
-            { retain: 5, attributes: { bold: true } },
+            { attributes: undefined, insert: "Hello" },
+            { attributes: { bold: true }, retain: 5 },
         ])
     })
 
@@ -52,7 +52,7 @@ describe("concat()", () => {
         const a = Delta.insert([], "Hello")
         const b = Delta.insert([], " world")
         expect(pipe(a, Delta.concat(b))).toEqual([
-            { insert: "Hello world", attributes: undefined },
+            { attributes: undefined, insert: "Hello world" },
         ])
     })
 })

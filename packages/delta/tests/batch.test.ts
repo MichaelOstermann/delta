@@ -19,12 +19,12 @@ describe("batch()", () => {
 
         // Original should be unchanged
         expect(original).toEqual([
-            { insert: "Hello", attributes: undefined },
+            { attributes: undefined, insert: "Hello" },
         ])
 
         // Batched result
         expect(batched).toEqual([
-            { insert: "Hello world!", attributes: undefined },
+            { attributes: undefined, insert: "Hello world!" },
         ])
 
         // After batch, operations should copy again

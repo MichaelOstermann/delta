@@ -25,8 +25,8 @@ describe("OpIterator (embed)", () => {
         OpIterator.next(iter) // consume Hello
         OpIterator.next(iter) // consume retain(3)
         expect(OpIterator.next(iter)).toEqual({
-            insert: { embed: 2 },
             attributes: { src: "http://quilljs.com/" },
+            insert: { embed: 2 },
         })
     })
 
@@ -35,8 +35,8 @@ describe("OpIterator (embed)", () => {
         OpIterator.next(iter) // consume Hello
         OpIterator.next(iter) // consume retain(3)
         expect(OpIterator.next(iter, 1)).toEqual({
-            insert: { embed: 2 },
             attributes: { src: "http://quilljs.com/" },
+            insert: { embed: 2 },
         })
     })
 
@@ -44,9 +44,9 @@ describe("OpIterator (embed)", () => {
         const iter = OpIterator.create(ops)
         OpIterator.next(iter, 2) // consume 'He'
         expect(OpIterator.rest(iter)).toEqual([
-            { insert: "llo", attributes: { bold: true } },
-            { retain: 3, attributes: undefined },
-            { insert: { embed: 2 }, attributes: { src: "http://quilljs.com/" } },
+            { attributes: { bold: true }, insert: "llo" },
+            { attributes: undefined, retain: 3 },
+            { attributes: { src: "http://quilljs.com/" }, insert: { embed: 2 } },
             { delete: 4 },
         ])
     })
@@ -57,7 +57,7 @@ describe("OpIterator (embed)", () => {
         OpIterator.next(iter, 3) // llo
         OpIterator.next(iter, 3) // retain(3)
         expect(OpIterator.rest(iter)).toEqual([
-            { insert: { embed: 2 }, attributes: { src: "http://quilljs.com/" } },
+            { attributes: { src: "http://quilljs.com/" }, insert: { embed: 2 } },
             { delete: 4 },
         ])
     })

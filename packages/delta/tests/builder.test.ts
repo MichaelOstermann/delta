@@ -6,21 +6,21 @@ describe("insert()", () => {
     it("insert(text)", () => {
         const delta = Delta.insert([], "test")
         expect(delta.length).toEqual(1)
-        expect(delta[0]).toEqual({ insert: "test", attributes: undefined })
+        expect(delta[0]).toEqual({ attributes: undefined, insert: "test" })
     })
 
     it("insert(text, null)", () => {
         const delta = Delta.insert([], "test", null)
         expect(delta.length).toEqual(1)
-        expect(delta[0]).toEqual({ insert: "test", attributes: undefined })
+        expect(delta[0]).toEqual({ attributes: undefined, insert: "test" })
     })
 
     it("insert(text, attributes)", () => {
         const delta = Delta.insert([], "test", { bold: true })
         expect(delta.length).toEqual(1)
         expect(delta[0]).toEqual({
-            insert: "test",
             attributes: { bold: true },
+            insert: "test",
         })
     })
 
@@ -82,19 +82,19 @@ describe("retain()", () => {
     it("retain(length)", () => {
         const delta = Delta.retain([], 2)
         expect(delta.length).toEqual(1)
-        expect(delta[0]).toEqual({ retain: 2, attributes: undefined })
+        expect(delta[0]).toEqual({ attributes: undefined, retain: 2 })
     })
 
     it("retain(length, null)", () => {
         const delta = Delta.retain([], 2, null)
         expect(delta.length).toEqual(1)
-        expect(delta[0]).toEqual({ retain: 2, attributes: undefined })
+        expect(delta[0]).toEqual({ attributes: undefined, retain: 2 })
     })
 
     it("retain(length, attributes)", () => {
         const delta = Delta.retain([], 1, { bold: true })
         expect(delta.length).toEqual(1)
-        expect(delta[0]).toEqual({ retain: 1, attributes: { bold: true } })
+        expect(delta[0]).toEqual({ attributes: { bold: true }, retain: 1 })
     })
 
     it("retain(length, {})", () => {
@@ -114,7 +114,7 @@ describe("retain()", () => {
 
 describe("push()", () => {
     it("push(op) into empty", () => {
-        const delta = Delta.push([], { insert: "test", attributes: undefined })
+        const delta = Delta.push([], { attributes: undefined, insert: "test" })
         expect(delta.length).toEqual(1)
     })
 
@@ -132,37 +132,37 @@ describe("push()", () => {
         const delta = pipe(
             [],
             Delta.insert("a"),
-            Delta.push({ insert: "b", attributes: undefined }),
+            Delta.push({ attributes: undefined, insert: "b" }),
         )
         expect(delta.length).toEqual(1)
-        expect(delta[0]).toEqual({ insert: "ab", attributes: undefined })
+        expect(delta[0]).toEqual({ attributes: undefined, insert: "ab" })
     })
 
     it("push(op) consecutive texts with matching attributes", () => {
         const delta = pipe(
             [],
             Delta.insert("a", { bold: true }),
-            Delta.push({ insert: "b", attributes: { bold: true } }),
+            Delta.push({ attributes: { bold: true }, insert: "b" }),
         )
         expect(delta.length).toEqual(1)
-        expect(delta[0]).toEqual({ insert: "ab", attributes: { bold: true } })
+        expect(delta[0]).toEqual({ attributes: { bold: true }, insert: "ab" })
     })
 
     it("push(op) consecutive retains with matching attributes", () => {
         const delta = pipe(
             [],
             Delta.retain(1, { bold: true }),
-            Delta.push({ retain: 3, attributes: { bold: true } }),
+            Delta.push({ attributes: { bold: true }, retain: 3 }),
         )
         expect(delta.length).toEqual(1)
-        expect(delta[0]).toEqual({ retain: 4, attributes: { bold: true } })
+        expect(delta[0]).toEqual({ attributes: { bold: true }, retain: 4 })
     })
 
     it("push(op) consecutive texts with mismatched attributes", () => {
         const delta = pipe(
             [],
             Delta.insert("a", { bold: true }),
-            Delta.push({ insert: "b", attributes: undefined }),
+            Delta.push({ attributes: undefined, insert: "b" }),
         )
         expect(delta.length).toEqual(2)
     })
@@ -171,7 +171,7 @@ describe("push()", () => {
         const delta = pipe(
             [],
             Delta.retain(1, { bold: true }),
-            Delta.push({ retain: 3, attributes: undefined }),
+            Delta.push({ attributes: undefined, retain: 3 }),
         )
         expect(delta.length).toEqual(2)
     })
@@ -180,7 +180,7 @@ describe("push()", () => {
         const delta = pipe(
             [],
             Delta.insert({ embed: 1 }, { alt: "Description" }),
-            Delta.push({ insert: { url: "http://quilljs.com" }, attributes: { alt: "Description" } }),
+            Delta.push({ attributes: { alt: "Description" }, insert: { url: "http://quilljs.com" } }),
         )
         expect(delta.length).toEqual(2)
     })
@@ -190,15 +190,15 @@ describe("insert() embed", () => {
     it("insert(embed)", () => {
         const delta = Delta.insert([], { embed: 1 })
         expect(delta.length).toEqual(1)
-        expect(delta[0]).toEqual({ insert: { embed: 1 }, attributes: undefined })
+        expect(delta[0]).toEqual({ attributes: undefined, insert: { embed: 1 } })
     })
 
     it("insert(embed, attributes)", () => {
         const delta = Delta.insert([], { embed: 1 }, { alt: "Quill", url: "http://quilljs.com" })
         expect(delta.length).toEqual(1)
         expect(delta[0]).toEqual({
-            insert: { embed: 1 },
             attributes: { alt: "Quill", url: "http://quilljs.com" },
+            insert: { embed: 1 },
         })
     })
 
@@ -207,8 +207,8 @@ describe("insert() embed", () => {
         const delta = Delta.insert([], embed, { alt: "Quill" })
         expect(delta.length).toEqual(1)
         expect(delta[0]).toEqual({
-            insert: { url: "http://quilljs.com" },
             attributes: { alt: "Quill" },
+            insert: { url: "http://quilljs.com" },
         })
     })
 
