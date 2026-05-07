@@ -11,12 +11,12 @@ type EmbedValue = Record<string, unknown>
 
 type InsertOp = {
     insert: string | EmbedValue
-    attributes: OpAttributes | undefined
+    attributes?: OpAttributes
 }
 
 type RetainOp = {
     retain: number
-    attributes: OpAttributes | undefined
+    attributes?: OpAttributes
 }
 
 type DeleteOp = {

@@ -3,12 +3,12 @@ import type { OpAttributes } from "../OpAttributes"
 export type EmbedValue = Record<string, unknown>
 
 export type InsertOp = {
-    attributes: OpAttributes | undefined
+    attributes?: OpAttributes
     insert: string | EmbedValue
 }
 
 export type RetainOp = {
-    attributes: OpAttributes | undefined
+    attributes?: OpAttributes
     retain: number
 }
 
