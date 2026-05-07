@@ -22,10 +22,10 @@ import { hasKeys } from "../internals/hasKeys"
  * import { Delta } from "@monstermann/delta";
  *
  * Delta.retain([], 5);
- * // [{ type: "retain", value: 5 }]
+ * // [{ retain: 5 }]
  *
  * Delta.retain([], 5, { bold: true });
- * // [{ type: "retain", value: 5, attributes: { bold: true } }]
+ * // [{ retain: 5, attributes: { bold: true } }]
  * ```
  *
  * <!-- prettier-ignore -->
@@ -33,15 +33,15 @@ import { hasKeys } from "../internals/hasKeys"
  * import { Delta } from "@monstermann/delta";
  *
  * pipe([], Delta.retain(5));
- * // [{ type: "retain", value: 5 }]
+ * // [{ retain: 5 }]
  *
  * pipe(
  *     [],
  *     Delta.retain(3),
  *     Delta.retain(2, { italic: true })
  * );
- * // [{ type: "retain", value: 3 },
- * //  { type: "retain", value: 2, attributes: { italic: true } }]
+ * // [{ retain: 3 },
+ * //  { retain: 2, attributes: { italic: true } }]
  * ```
  *
  * ## Removing attributes
@@ -52,13 +52,13 @@ import { hasKeys } from "../internals/hasKeys"
  * import { Delta } from "@monstermann/delta";
  *
  * const doc = Delta.insert([], "Hello", { bold: true });
- * // [{ type: "insert", value: "Hello", attributes: { bold: true } }]
+ * // [{ insert: "Hello", attributes: { bold: true } }]
  *
  * const removeBold = Delta.retain([], 5, { bold: null });
- * // [{ type: "retain", value: 5, attributes: { bold: null } }]
+ * // [{ retain: 5, attributes: { bold: null } }]
  *
  * Delta.compose(doc, removeBold);
- * // [{ type: "insert", value: "Hello" }]
+ * // [{ insert: "Hello" }]
  * ```
  *
  */
@@ -81,8 +81,7 @@ export const retain: {
     if (!Number.isInteger(length)) return ops
     if (length <= 0) return ops
     return Delta.push(ops, {
+        retain: length,
         attributes: attributes && hasKeys(attributes) ? attributes : undefined,
-        type: "retain",
-        value: length,
     })
 }, args => typeof args[0] !== "number")

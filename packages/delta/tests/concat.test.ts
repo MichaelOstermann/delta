@@ -7,7 +7,7 @@ describe("concat()", () => {
         const a = Delta.insert([], "Hello")
         const b = Delta.insert([], " world")
         expect(Delta.concat(a, b)).toEqual([
-            { attributes: undefined, type: "insert", value: "Hello world" },
+            { insert: "Hello world", attributes: undefined },
         ])
     })
 
@@ -15,8 +15,8 @@ describe("concat()", () => {
         const a = Delta.insert([], "Hello", { bold: true })
         const b = Delta.insert([], " world", { italic: true })
         expect(Delta.concat(a, b)).toEqual([
-            { attributes: { bold: true }, type: "insert", value: "Hello" },
-            { attributes: { italic: true }, type: "insert", value: " world" },
+            { insert: "Hello", attributes: { bold: true } },
+            { insert: " world", attributes: { italic: true } },
         ])
     })
 
@@ -34,8 +34,8 @@ describe("concat()", () => {
         const a = Delta.insert([], "Hello")
         const b = Delta.remove([], 3)
         expect(Delta.concat(a, b)).toEqual([
-            { attributes: undefined, type: "insert", value: "Hello" },
-            { attributes: undefined, type: "remove", value: 3 },
+            { insert: "Hello", attributes: undefined },
+            { delete: 3 },
         ])
     })
 
@@ -43,8 +43,8 @@ describe("concat()", () => {
         const a = Delta.insert([], "Hello")
         const b = Delta.retain([], 5, { bold: true })
         expect(Delta.concat(a, b)).toEqual([
-            { attributes: undefined, type: "insert", value: "Hello" },
-            { attributes: { bold: true }, type: "retain", value: 5 },
+            { insert: "Hello", attributes: undefined },
+            { retain: 5, attributes: { bold: true } },
         ])
     })
 
@@ -52,7 +52,7 @@ describe("concat()", () => {
         const a = Delta.insert([], "Hello")
         const b = Delta.insert([], " world")
         expect(pipe(a, Delta.concat(b))).toEqual([
-            { attributes: undefined, type: "insert", value: "Hello world" },
+            { insert: "Hello world", attributes: undefined },
         ])
     })
 })

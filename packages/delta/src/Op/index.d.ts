@@ -10,24 +10,21 @@ import { OpAttributes } from "../OpAttributes/index.js";
 type EmbedValue = Record<string, unknown>
 
 type InsertOp = {
+    insert: string | EmbedValue
     attributes: OpAttributes | undefined
-    type: "insert"
-    value: string | EmbedValue
 }
 
 type RetainOp = {
+    retain: number
     attributes: OpAttributes | undefined
-    type: "retain"
-    value: number
 }
 
-type RemoveOp = {
-    attributes: undefined
-    type: "remove"
-    value: number
+type DeleteOp = {
+    delete: number
+    attributes?: undefined
 }
 
-type Op = InsertOp | RetainOp | RemoveOp
+type Op = InsertOp | RetainOp | DeleteOp
 
 declare namespace Op {
     export {
@@ -39,6 +36,6 @@ export {
     Op,
     EmbedValue,
     InsertOp,
-    RemoveOp,
+    DeleteOp,
     RetainOp,
 }

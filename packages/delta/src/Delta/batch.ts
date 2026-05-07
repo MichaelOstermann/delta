@@ -26,8 +26,8 @@ import { endMutations, startMutations } from "@monstermann/remmi"
  *     delta = Delta.insert(delta, " world");
  *     return delta;
  * });
- * // [{ type: "insert", value: "Hello", attributes: { bold: true } },
- * //  { type: "insert", value: " world" }]
+ * // [{ insert: "Hello", attributes: { bold: true } },
+ * //  { insert: " world" }]
  * ```
  *
  * ```ts [data-last]
@@ -43,8 +43,8 @@ import { endMutations, startMutations } from "@monstermann/remmi"
  *         return delta;
  *     }),
  * );
- * // [{ type: "insert", value: "Hello", attributes: { bold: true } },
- * //  { type: "insert", value: " world" }]
+ * // [{ insert: "Hello", attributes: { bold: true } },
+ * //  { insert: " world" }]
  * ```
  *
  */

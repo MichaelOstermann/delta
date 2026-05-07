@@ -42,9 +42,20 @@ export const equals: {
     for (let i = 0; i < a.length; i++) {
         const aOp = a[i]!
         const bOp = b[i]!
-        if (aOp.type !== bOp.type) return false
-        if (aOp.value !== bOp.value) return false
-        if (!isEqual(aOp.attributes, bOp.attributes)) return false
+        if ("insert" in aOp && "insert" in bOp) {
+            if (aOp.insert !== bOp.insert) return false
+            if (!isEqual(aOp.attributes, bOp.attributes)) return false
+        }
+        else if ("retain" in aOp && "retain" in bOp) {
+            if (aOp.retain !== bOp.retain) return false
+            if (!isEqual(aOp.attributes, bOp.attributes)) return false
+        }
+        else if ("delete" in aOp && "delete" in bOp) {
+            if (aOp.delete !== bOp.delete) return false
+        }
+        else {
+            return false
+        }
     }
     return true
 }, 2)

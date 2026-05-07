@@ -18,10 +18,10 @@ Adds a retain operation to the delta, optionally with attributes to apply format
 import { Delta } from "@monstermann/delta";
 
 Delta.retain([], 5);
-// [{ type: "retain", value: 5 }]
+// [{ retain: 5 }]
 
 Delta.retain([], 5, { bold: true });
-// [{ type: "retain", value: 5, attributes: { bold: true } }]
+// [{ retain: 5, attributes: { bold: true } }]
 ```
 
 <!-- prettier-ignore -->
@@ -29,15 +29,15 @@ Delta.retain([], 5, { bold: true });
 import { Delta } from "@monstermann/delta";
 
 pipe([], Delta.retain(5));
-// [{ type: "retain", value: 5 }]
+// [{ retain: 5 }]
 
 pipe(
     [],
     Delta.retain(3),
     Delta.retain(2, { italic: true })
 );
-// [{ type: "retain", value: 3 },
-//  { type: "retain", value: 2, attributes: { italic: true } }]
+// [{ retain: 3 },
+//  { retain: 2, attributes: { italic: true } }]
 ```
 
 :::
@@ -50,11 +50,11 @@ Use `null` to remove an attribute when composing deltas:
 import { Delta } from "@monstermann/delta";
 
 const doc = Delta.insert([], "Hello", { bold: true });
-// [{ type: "insert", value: "Hello", attributes: { bold: true } }]
+// [{ insert: "Hello", attributes: { bold: true } }]
 
 const removeBold = Delta.retain([], 5, { bold: null });
-// [{ type: "retain", value: 5, attributes: { bold: null } }]
+// [{ retain: 5, attributes: { bold: null } }]
 
 Delta.compose(doc, removeBold);
-// [{ type: "insert", value: "Hello" }]
+// [{ insert: "Hello" }]
 ```

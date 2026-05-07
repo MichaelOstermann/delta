@@ -22,7 +22,7 @@ import { Delta } from "."
  *     Delta.insert("Hello"),
  *     Delta.insert(" world")
  * ));
- * // [{ type: "insert", value: "Hello world" }]
+ * // [{ insert: "Hello world" }]
  *
  * Delta.clean(
  *     pipe(
@@ -31,7 +31,7 @@ import { Delta } from "."
  *         Delta.insert(" world", { bold: true }),
  *     ),
  * );
- * // [{ type: "insert", value: "Hello world", attributes: { bold: true } }]
+ * // [{ insert: "Hello world", attributes: { bold: true } }]
  * ```
  *
  * <!-- prettier-ignore -->
@@ -44,7 +44,7 @@ import { Delta } from "."
  *     Delta.insert(" world"),
  *     Delta.clean()
  * );
- * // [{ type: "insert", value: "Hello world" }]
+ * // [{ insert: "Hello world" }]
  * ```
  *
  */

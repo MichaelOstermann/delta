@@ -16,8 +16,6 @@ This library has been largely ported from [quill-delta](https://github.com/slab/
 
 - Immutable with optional transient mutations
 - Functional data-first/data-last API acting upon plain arrays
-- Operations have been migrated to a monomorphic, tagged union
-- The `delete` operation has been renamed to `remove`, as `delete` is a reserved keyword
 - Support for nested attributes has been removed
 - Cloning is only done when the data actually changes
 - Deep-cloning has been replaced with shallow-cloning
@@ -36,16 +34,16 @@ const change = Delta.retain([], 5, { bold: true });
 
 // Apply the change
 const result = Delta.compose(doc, change);
-// [{ type: "insert", value: "Hello", attributes: { bold: true } },
-//  { type: "insert", value: " world" }]
+// [{ insert: "Hello", attributes: { bold: true } },
+//  { insert: " world" }]
 
 // Compute the difference between two documents
 const a = Delta.insert([], "Hello");
 const b = Delta.insert([], "Hello world");
 
 Delta.diff(a, b);
-// [{ type: "retain", value: 5 },
-//  { type: "insert", value: " world" }]
+// [{ retain: 5 },
+//  { insert: " world" }]
 ```
 
 ## Installation
@@ -91,8 +89,8 @@ Delta.batch([], (delta) => {
     delta = Delta.insert(delta, " world");
     return delta;
 });
-// [{ type: "insert", value: "Hello", attributes: { bold: true } },
-//  { type: "insert", value: " world" }]
+// [{ insert: "Hello", attributes: { bold: true } },
+//  { insert: " world" }]
 ```
 
 ```ts [data-last]
@@ -108,8 +106,8 @@ pipe(
         return delta;
     }),
 );
-// [{ type: "insert", value: "Hello", attributes: { bold: true } },
-//  { type: "insert", value: " world" }]
+// [{ insert: "Hello", attributes: { bold: true } },
+//  { insert: " world" }]
 ```
 
 ### chop
@@ -131,15 +129,15 @@ Delta.chop(pipe(
     Delta.insert("Hello"),
     Delta.retain(5)
 ));
-// [{ type: "insert", value: "Hello" }]
+// [{ insert: "Hello" }]
 
 Delta.chop(pipe(
     [],
     Delta.insert("Hello"),
     Delta.retain(5, { bold: true })
 ));
-// [{ type: "insert", value: "Hello" },
-//  { type: "retain", value: 5, attributes: { bold: true } }]
+// [{ insert: "Hello" },
+//  { retain: 5, attributes: { bold: true } }]
 ```
 
 <!-- prettier-ignore -->
@@ -152,7 +150,7 @@ pipe(
     Delta.retain(5),
     Delta.chop()
 );
-// [{ type: "insert", value: "Hello" }]
+// [{ insert: "Hello" }]
 ```
 
 ### clean
@@ -174,7 +172,7 @@ Delta.clean(pipe(
     Delta.insert("Hello"),
     Delta.insert(" world")
 ));
-// [{ type: "insert", value: "Hello world" }]
+// [{ insert: "Hello world" }]
 
 Delta.clean(
     pipe(
@@ -183,7 +181,7 @@ Delta.clean(
         Delta.insert(" world", { bold: true }),
     ),
 );
-// [{ type: "insert", value: "Hello world", attributes: { bold: true } }]
+// [{ insert: "Hello world", attributes: { bold: true } }]
 ```
 
 <!-- prettier-ignore -->
@@ -196,7 +194,7 @@ pipe(
     Delta.insert(" world"),
     Delta.clean()
 );
-// [{ type: "insert", value: "Hello world" }]
+// [{ insert: "Hello world" }]
 ```
 
 ### compose
@@ -221,12 +219,12 @@ const b = pipe(
 );
 
 Delta.compose(a, b);
-// [{ type: "insert", value: "Hello world" }]
+// [{ insert: "Hello world" }]
 
 const format = Delta.retain([], 5, { bold: true });
 
 Delta.compose(a, format);
-// [{ type: "insert", value: "Hello", attributes: { bold: true } }]
+// [{ insert: "Hello", attributes: { bold: true } }]
 ```
 
 <!-- prettier-ignore -->
@@ -241,7 +239,7 @@ const b = pipe(
 );
 
 pipe(a, Delta.compose(b));
-// [{ type: "insert", value: "Hello world" }]
+// [{ insert: "Hello world" }]
 ```
 
 ### concat
@@ -261,14 +259,14 @@ const a = Delta.insert([], "Hello");
 const b = Delta.insert([], " world");
 
 Delta.concat(a, b);
-// [{ type: "insert", value: "Hello world" }]
+// [{ insert: "Hello world" }]
 
 const bold = Delta.insert([], "Hello", { bold: true });
 const italic = Delta.insert([], " world", { italic: true });
 
 Delta.concat(bold, italic);
-// [{ type: "insert", value: "Hello", attributes: { bold: true } },
-//  { type: "insert", value: " world", attributes: { italic: true } }]
+// [{ insert: "Hello", attributes: { bold: true } },
+//  { insert: " world", attributes: { italic: true } }]
 ```
 
 ```ts [data-last]
@@ -278,7 +276,7 @@ const a = Delta.insert([], "Hello");
 const b = Delta.insert([], " world");
 
 pipe(a, Delta.concat(b));
-// [{ type: "insert", value: "Hello world" }]
+// [{ insert: "Hello world" }]
 ```
 
 ### diff
@@ -300,14 +298,14 @@ const a = Delta.insert([], "Hello");
 const b = Delta.insert([], "Hello world");
 
 Delta.diff(a, b);
-// [{ type: "retain", value: 5 },
-//  { type: "insert", value: " world" }]
+// [{ retain: 5 },
+//  { insert: " world" }]
 
 const plain = Delta.insert([], "Hello");
 const bold = Delta.insert([], "Hello", { bold: true });
 
 Delta.diff(plain, bold);
-// [{ type: "retain", value: 5, attributes: { bold: true } }]
+// [{ retain: 5, attributes: { bold: true } }]
 ```
 
 ```ts [data-last]
@@ -317,8 +315,8 @@ const a = Delta.insert([], "Hello");
 const b = Delta.insert([], "Hello world");
 
 pipe(a, Delta.diff(b));
-// [{ type: "retain", value: 5 },
-//  { type: "insert", value: " world" }]
+// [{ retain: 5 },
+//  { insert: " world" }]
 ```
 
 #### Cursor hint
@@ -333,12 +331,12 @@ const b = Delta.insert([], "foo bar foo");
 
 // cursor=3: user typed " bar foo" at the end
 Delta.diff(a, b, 3);
-// [{ type: "retain", value: 3 },
-//  { type: "insert", value: " bar foo" }]
+// [{ retain: 3 },
+//  { insert: " bar foo" }]
 
 // cursor=0: user typed "foo bar " at the beginning
 Delta.diff(a, b, 0);
-// [{ type: "insert", value: "foo bar " }]
+// [{ insert: "foo bar " }]
 ```
 
 ### equals
@@ -389,25 +387,25 @@ Adds an insert operation to the delta.
 import { Delta } from "@monstermann/delta";
 
 Delta.insert([], "Hello");
-// [{ type: "insert", value: "Hello" }]
+// [{ insert: "Hello" }]
 
 Delta.insert([], "Hello", { bold: true });
-// [{ type: "insert", value: "Hello", attributes: { bold: true } }]
+// [{ insert: "Hello", attributes: { bold: true } }]
 ```
 
 ```ts [data-last]
 import { Delta } from "@monstermann/delta";
 
 pipe([], Delta.insert("Hello"));
-// [{ type: "insert", value: "Hello" }]
+// [{ insert: "Hello" }]
 
 pipe(
     [],
     Delta.insert("Hello", { bold: true }),
     Delta.insert(" world", { italic: true }),
 );
-// [{ type: "insert", value: "Hello", attributes: { bold: true } },
-//  { type: "insert", value: " world", attributes: { italic: true } }]
+// [{ insert: "Hello", attributes: { bold: true } },
+//  { insert: " world", attributes: { italic: true } }]
 ```
 
 ### invert
@@ -428,7 +426,7 @@ const base = Delta.insert([], "Hello");
 const change = Delta.retain([], 5, { bold: true });
 
 Delta.invert(change, base);
-// [{ type: "retain", value: 5, attributes: { bold: null } }]
+// [{ retain: 5, attributes: { bold: null } }]
 
 const insert = pipe(
     [],
@@ -437,8 +435,8 @@ const insert = pipe(
 );
 
 Delta.invert(insert, base);
-// [{ type: "retain", value: 5 },
-//  { type: "remove", value: 6 }]
+// [{ retain: 5 },
+//  { delete: 6 }]
 ```
 
 ```ts [data-last]
@@ -448,7 +446,7 @@ const base = Delta.insert([], "Hello");
 const change = Delta.retain([], 5, { bold: true });
 
 pipe(change, Delta.invert(base));
-// [{ type: "retain", value: 5, attributes: { bold: null } }]
+// [{ retain: 5, attributes: { bold: null } }]
 ```
 
 ### length
@@ -502,28 +500,25 @@ Pushes an operation onto the delta, merging with the previous operation if possi
 ```ts [data-first]
 import { Delta } from "@monstermann/delta";
 
-Delta.push([], { type: "insert", value: "Hello" });
-// [{ type: "insert", value: "Hello" }]
+Delta.push([], { insert: "Hello" });
+// [{ insert: "Hello" }]
 
-Delta.push(Delta.push([], { type: "insert", value: "Hello" }), {
-    type: "insert",
-    value: " world",
-});
-// [{ type: "insert", value: "Hello world" }]
+Delta.push(Delta.push([], { insert: "Hello" }), { insert: " world" });
+// [{ insert: "Hello world" }]
 ```
 
 ```ts [data-last]
 import { Delta } from "@monstermann/delta";
 
-pipe([], Delta.push({ type: "insert", value: "Hello" }));
-// [{ type: "insert", value: "Hello" }]
+pipe([], Delta.push({ insert: "Hello" }));
+// [{ insert: "Hello" }]
 
 pipe(
     [],
-    Delta.push({ type: "insert", value: "Hello" }),
-    Delta.push({ type: "insert", value: " world" }),
+    Delta.push({ insert: "Hello" }),
+    Delta.push({ insert: " world" }),
 );
-// [{ type: "insert", value: "Hello world" }]
+// [{ insert: "Hello world" }]
 ```
 
 ### remove
@@ -540,18 +535,18 @@ Adds a remove operation to the delta.
 import { Delta } from "@monstermann/delta";
 
 Delta.remove([], 5);
-// [{ type: "remove", value: 5 }]
+// [{ delete: 5 }]
 ```
 
 ```ts [data-last]
 import { Delta } from "@monstermann/delta";
 
 pipe([], Delta.remove(5));
-// [{ type: "remove", value: 5 }]
+// [{ delete: 5 }]
 
 pipe([], Delta.retain(3), Delta.remove(5));
-// [{ type: "retain", value: 3 },
-//  { type: "remove", value: 5 }]
+// [{ retain: 3 },
+//  { delete: 5 }]
 ```
 
 ### retain
@@ -572,10 +567,10 @@ Adds a retain operation to the delta, optionally with attributes to apply format
 import { Delta } from "@monstermann/delta";
 
 Delta.retain([], 5);
-// [{ type: "retain", value: 5 }]
+// [{ retain: 5 }]
 
 Delta.retain([], 5, { bold: true });
-// [{ type: "retain", value: 5, attributes: { bold: true } }]
+// [{ retain: 5, attributes: { bold: true } }]
 ```
 
 <!-- prettier-ignore -->
@@ -583,15 +578,15 @@ Delta.retain([], 5, { bold: true });
 import { Delta } from "@monstermann/delta";
 
 pipe([], Delta.retain(5));
-// [{ type: "retain", value: 5 }]
+// [{ retain: 5 }]
 
 pipe(
     [],
     Delta.retain(3),
     Delta.retain(2, { italic: true })
 );
-// [{ type: "retain", value: 3 },
-//  { type: "retain", value: 2, attributes: { italic: true } }]
+// [{ retain: 3 },
+//  { retain: 2, attributes: { italic: true } }]
 ```
 
 #### Removing attributes
@@ -602,13 +597,13 @@ Use `null` to remove an attribute when composing deltas:
 import { Delta } from "@monstermann/delta";
 
 const doc = Delta.insert([], "Hello", { bold: true });
-// [{ type: "insert", value: "Hello", attributes: { bold: true } }]
+// [{ insert: "Hello", attributes: { bold: true } }]
 
 const removeBold = Delta.retain([], 5, { bold: null });
-// [{ type: "retain", value: 5, attributes: { bold: null } }]
+// [{ retain: 5, attributes: { bold: null } }]
 
 Delta.compose(doc, removeBold);
-// [{ type: "insert", value: "Hello" }]
+// [{ insert: "Hello" }]
 ```
 
 ### slice
@@ -627,10 +622,10 @@ import { Delta } from "@monstermann/delta";
 const delta = Delta.insert([], "Hello world");
 
 Delta.slice(delta, 0, 5);
-// [{ type: "insert", value: "Hello" }]
+// [{ insert: "Hello" }]
 
 Delta.slice(delta, 6);
-// [{ type: "insert", value: "world" }]
+// [{ insert: "world" }]
 
 const formatted = pipe(
     [],
@@ -639,8 +634,8 @@ const formatted = pipe(
 );
 
 Delta.slice(formatted, 3, 8);
-// [{ type: "insert", value: "lo", attributes: { bold: true } },
-//  { type: "insert", value: " wo", attributes: { italic: true } }]
+// [{ insert: "lo", attributes: { bold: true } },
+//  { insert: " wo", attributes: { italic: true } }]
 ```
 
 <!-- prettier-ignore -->
@@ -652,14 +647,14 @@ pipe(
     Delta.insert("Hello world"),
     Delta.slice(0, 5)
 );
-// [{ type: "insert", value: "Hello" }]
+// [{ insert: "Hello" }]
 
 pipe(
     [],
     Delta.insert("Hello world"),
     Delta.slice(6)
 );
-// [{ type: "insert", value: "world" }]
+// [{ insert: "world" }]
 ```
 
 ### transform
@@ -684,11 +679,11 @@ const a = Delta.insert([], "Hello");
 const b = Delta.insert([], "World");
 
 Delta.transform(a, b, true);
-// [{ type: "retain", value: 5 },
-//  { type: "insert", value: "World" }]
+// [{ retain: 5 },
+//  { insert: "World" }]
 
 Delta.transform(a, b, false);
-// [{ type: "insert", value: "World" }]
+// [{ insert: "World" }]
 
 const format = Delta.retain([], 5, { bold: true });
 const insert = pipe(
@@ -698,7 +693,7 @@ const insert = pipe(
 );
 
 Delta.transform(insert, format);
-// [{ type: "retain", value: 8, attributes: { bold: true } }]
+// [{ retain: 8, attributes: { bold: true } }]
 ```
 
 ```ts [data-last]
@@ -708,8 +703,8 @@ const a = Delta.insert([], "Hello");
 const b = Delta.insert([], "World");
 
 pipe(a, Delta.transform(b, true));
-// [{ type: "retain", value: 5 },
-//  { type: "insert", value: "World" }]
+// [{ retain: 5 },
+//  { insert: "World" }]
 ```
 
 ## Op
@@ -729,8 +724,8 @@ For string inserts this is the number of characters. For embed inserts this is a
 ```ts
 import { Op } from "@monstermann/delta";
 
-Op.length({ type: "insert", value: "Hello" }); // 5
-Op.length({ type: "insert", value: { image: "..." } }); // 1
-Op.length({ type: "retain", value: 3 }); // 3
-Op.length({ type: "remove", value: 2 }); // 2
+Op.length({ insert: "Hello" }); // 5
+Op.length({ insert: { image: "..." } }); // 1
+Op.length({ retain: 3 }); // 3
+Op.length({ delete: 2 }); // 2
 ```

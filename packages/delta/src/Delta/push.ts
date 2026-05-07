@@ -18,28 +18,25 @@ import { isEqual } from "../internals/isEqual"
  * ```ts [data-first]
  * import { Delta } from "@monstermann/delta";
  *
- * Delta.push([], { type: "insert", value: "Hello" });
- * // [{ type: "insert", value: "Hello" }]
+ * Delta.push([], { insert: "Hello" });
+ * // [{ insert: "Hello" }]
  *
- * Delta.push(Delta.push([], { type: "insert", value: "Hello" }), {
- *     type: "insert",
- *     value: " world",
- * });
- * // [{ type: "insert", value: "Hello world" }]
+ * Delta.push(Delta.push([], { insert: "Hello" }), { insert: " world" });
+ * // [{ insert: "Hello world" }]
  * ```
  *
  * ```ts [data-last]
  * import { Delta } from "@monstermann/delta";
  *
- * pipe([], Delta.push({ type: "insert", value: "Hello" }));
- * // [{ type: "insert", value: "Hello" }]
+ * pipe([], Delta.push({ insert: "Hello" }));
+ * // [{ insert: "Hello" }]
  *
  * pipe(
  *     [],
- *     Delta.push({ type: "insert", value: "Hello" }),
- *     Delta.push({ type: "insert", value: " world" }),
+ *     Delta.push({ insert: "Hello" }),
+ *     Delta.push({ insert: " world" }),
  * );
- * // [{ type: "insert", value: "Hello world" }]
+ * // [{ insert: "Hello world" }]
  * ```
  *
  */
@@ -56,14 +53,14 @@ export const push: {
     const lastOp = ops[length - 1]!
     let copy = cloneArray(ops)
 
-    if (lastOp.type === "remove" && op.type === "remove") {
-        copy[length - 1] = { attributes: undefined, type: "remove", value: lastOp.value + op.value }
+    if ("delete" in lastOp && "delete" in op) {
+        copy[length - 1] = { delete: lastOp.delete + op.delete }
         return copy
     }
 
     // Since it does not matter if we insert before or after deleting at the same index,
     // always prefer to insert first.
-    if (lastOp.type === "remove" && op.type === "insert") {
+    if ("delete" in lastOp && "insert" in op) {
         startMutations()
         copy.pop()
         copy = push(copy, op)
@@ -73,16 +70,16 @@ export const push: {
     }
 
     if (
-        lastOp.type === "insert" && op.type === "insert"
-        && typeof lastOp.value === "string" && typeof op.value === "string"
+        "insert" in lastOp && "insert" in op
+        && typeof lastOp.insert === "string" && typeof op.insert === "string"
         && isEqual(lastOp.attributes, op.attributes)
     ) {
-        copy[length - 1] = { attributes: op.attributes, type: "insert", value: lastOp.value + op.value }
+        copy[length - 1] = { insert: lastOp.insert + op.insert, attributes: op.attributes }
         return copy
     }
 
-    if (lastOp.type === "retain" && op.type === "retain" && isEqual(lastOp.attributes, op.attributes)) {
-        copy[length - 1] = { attributes: op.attributes, type: "retain", value: lastOp.value + op.value }
+    if ("retain" in lastOp && "retain" in op && isEqual(lastOp.attributes, op.attributes)) {
+        copy[length - 1] = { retain: lastOp.retain + op.retain, attributes: op.attributes }
         return copy
     }
 

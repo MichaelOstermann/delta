@@ -27,12 +27,12 @@ import { OpIterator } from "../OpIterator"
  * );
  *
  * Delta.compose(a, b);
- * // [{ type: "insert", value: "Hello world" }]
+ * // [{ insert: "Hello world" }]
  *
  * const format = Delta.retain([], 5, { bold: true });
  *
  * Delta.compose(a, format);
- * // [{ type: "insert", value: "Hello", attributes: { bold: true } }]
+ * // [{ insert: "Hello", attributes: { bold: true } }]
  * ```
  *
  * <!-- prettier-ignore -->
@@ -47,7 +47,7 @@ import { OpIterator } from "../OpIterator"
  * );
  *
  * pipe(a, Delta.compose(b));
- * // [{ type: "insert", value: "Hello world" }]
+ * // [{ insert: "Hello world" }]
  * ```
  *
  */
@@ -62,8 +62,8 @@ export const compose: {
     startMutations()
     let ops: Delta = markAsMutable([])
 
-    if (bHead?.type === "retain" && bHead.attributes == null) {
-        let bRetain = bHead.value
+    if (bHead != null && "retain" in bHead && bHead.attributes == null) {
+        let bRetain = bHead.retain
         while (
             OpIterator.peekType(aIter) === "insert"
             && OpIterator.peekLength(aIter) <= bRetain
@@ -71,8 +71,8 @@ export const compose: {
             bRetain -= OpIterator.peekLength(aIter)
             ops.push(OpIterator.next(aIter)!)
         }
-        if (bHead.value - bRetain > 0) {
-            OpIterator.next(bIter, bHead.value - bRetain)
+        if (bHead.retain - bRetain > 0) {
+            OpIterator.next(bIter, bHead.retain - bRetain)
         }
     }
 
@@ -80,30 +80,28 @@ export const compose: {
         if (OpIterator.peekType(bIter) === "insert") {
             ops = Delta.push(ops, OpIterator.next(bIter))
         }
-        else if (OpIterator.peekType(aIter) === "remove") {
+        else if (OpIterator.peekType(aIter) === "delete") {
             ops = Delta.push(ops, OpIterator.next(aIter))
         }
         else {
             const length = Math.min(OpIterator.peekLength(aIter), OpIterator.peekLength(bIter))
             const aOp = OpIterator.next(aIter, length)
             const bOp = OpIterator.next(bIter, length)
-            if (bOp.type === "retain") {
-                if (aOp.type === "retain") {
+            if ("retain" in bOp) {
+                if ("retain" in aOp) {
                     ops = Delta.push(ops, {
+                        retain: length,
                         attributes: OpAttributes.compose(aOp.attributes, bOp.attributes, true),
-                        type: "retain",
-                        value: length,
                     })
                 }
-                else if (aOp.type === "insert") {
+                else if ("insert" in aOp) {
                     ops = Delta.push(ops, {
+                        insert: aOp.insert,
                         attributes: OpAttributes.compose(aOp.attributes, bOp.attributes),
-                        type: "insert",
-                        value: aOp.value,
                     })
                 }
             }
-            else if (bOp.type === "remove" && aOp.type === "retain") {
+            else if ("delete" in bOp && "retain" in aOp) {
                 ops = Delta.push(ops, bOp)
             }
         }

@@ -14,18 +14,18 @@ Adds a remove operation to the delta.
 import { Delta } from "@monstermann/delta";
 
 Delta.remove([], 5);
-// [{ type: "remove", value: 5 }]
+// [{ delete: 5 }]
 ```
 
 ```ts [data-last]
 import { Delta } from "@monstermann/delta";
 
 pipe([], Delta.remove(5));
-// [{ type: "remove", value: 5 }]
+// [{ delete: 5 }]
 
 pipe([], Delta.retain(3), Delta.remove(5));
-// [{ type: "retain", value: 3 },
-//  { type: "remove", value: 5 }]
+// [{ retain: 3 },
+//  { delete: 5 }]
 ```
 
 :::

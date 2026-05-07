@@ -22,12 +22,12 @@ const b = pipe(
 );
 
 Delta.compose(a, b);
-// [{ type: "insert", value: "Hello world" }]
+// [{ insert: "Hello world" }]
 
 const format = Delta.retain([], 5, { bold: true });
 
 Delta.compose(a, format);
-// [{ type: "insert", value: "Hello", attributes: { bold: true } }]
+// [{ insert: "Hello", attributes: { bold: true } }]
 ```
 
 <!-- prettier-ignore -->
@@ -42,7 +42,7 @@ const b = pipe(
 );
 
 pipe(a, Delta.compose(b));
-// [{ type: "insert", value: "Hello world" }]
+// [{ insert: "Hello world" }]
 ```
 
 :::

@@ -23,8 +23,8 @@ Delta.batch([], (delta) => {
     delta = Delta.insert(delta, " world");
     return delta;
 });
-// [{ type: "insert", value: "Hello", attributes: { bold: true } },
-//  { type: "insert", value: " world" }]
+// [{ insert: "Hello", attributes: { bold: true } },
+//  { insert: " world" }]
 ```
 
 ```ts [data-last]
@@ -40,8 +40,8 @@ pipe(
         return delta;
     }),
 );
-// [{ type: "insert", value: "Hello", attributes: { bold: true } },
-//  { type: "insert", value: " world" }]
+// [{ insert: "Hello", attributes: { bold: true } },
+//  { insert: " world" }]
 ```
 
 :::

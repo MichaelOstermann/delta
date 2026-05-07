@@ -19,15 +19,15 @@ Delta.chop(pipe(
     Delta.insert("Hello"),
     Delta.retain(5)
 ));
-// [{ type: "insert", value: "Hello" }]
+// [{ insert: "Hello" }]
 
 Delta.chop(pipe(
     [],
     Delta.insert("Hello"),
     Delta.retain(5, { bold: true })
 ));
-// [{ type: "insert", value: "Hello" },
-//  { type: "retain", value: 5, attributes: { bold: true } }]
+// [{ insert: "Hello" },
+//  { retain: 5, attributes: { bold: true } }]
 ```
 
 <!-- prettier-ignore -->
@@ -40,7 +40,7 @@ pipe(
     Delta.retain(5),
     Delta.chop()
 );
-// [{ type: "insert", value: "Hello" }]
+// [{ insert: "Hello" }]
 ```
 
 :::

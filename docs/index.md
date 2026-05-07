@@ -25,8 +25,6 @@ This library has been largely ported from [quill-delta](https://github.com/slab/
 
 - Immutable with optional transient mutations
 - Functional data-first/data-last API acting upon plain arrays
-- Operations have been migrated to a monomorphic, tagged union
-- The `delete` operation has been renamed to `remove`, as `delete` is a reserved keyword
 - Support for nested attributes has been removed
 - Cloning is only done when the data actually changes
 - Deep-cloning has been replaced with shallow-cloning
@@ -45,16 +43,16 @@ const change = Delta.retain([], 5, { bold: true });
 
 // Apply the change
 const result = Delta.compose(doc, change);
-// [{ type: "insert", value: "Hello", attributes: { bold: true } },
-//  { type: "insert", value: " world" }]
+// [{ insert: "Hello", attributes: { bold: true } },
+//  { insert: " world" }]
 
 // Compute the difference between two documents
 const a = Delta.insert([], "Hello");
 const b = Delta.insert([], "Hello world");
 
 Delta.diff(a, b);
-// [{ type: "retain", value: 5 },
-//  { type: "insert", value: " world" }]
+// [{ retain: 5 },
+//  { insert: " world" }]
 ```
 
 ## Installation

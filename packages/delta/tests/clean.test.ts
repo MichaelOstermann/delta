@@ -4,49 +4,49 @@ import { Delta } from "../src/Delta"
 describe("clean()", () => {
     it("merges consecutive inserts with same attributes", () => {
         const delta = [
-            { attributes: undefined, type: "insert" as const, value: "Hello" },
-            { attributes: undefined, type: "insert" as const, value: " world" },
+            { insert: "Hello" as const, attributes: undefined },
+            { insert: " world" as const, attributes: undefined },
         ]
         expect(Delta.clean(delta)).toEqual([
-            { attributes: undefined, type: "insert", value: "Hello world" },
+            { insert: "Hello world", attributes: undefined },
         ])
     })
 
     it("merges consecutive inserts with matching attributes", () => {
         const delta = [
-            { attributes: { bold: true }, type: "insert" as const, value: "Hello" },
-            { attributes: { bold: true }, type: "insert" as const, value: " world" },
+            { insert: "Hello" as const, attributes: { bold: true } },
+            { insert: " world" as const, attributes: { bold: true } },
         ]
         expect(Delta.clean(delta)).toEqual([
-            { attributes: { bold: true }, type: "insert", value: "Hello world" },
+            { insert: "Hello world", attributes: { bold: true } },
         ])
     })
 
     it("does not merge inserts with different attributes", () => {
         const delta: Delta = [
-            { attributes: { bold: true }, type: "insert", value: "Hello" },
-            { attributes: { italic: true }, type: "insert", value: " world" },
+            { insert: "Hello", attributes: { bold: true } },
+            { insert: " world", attributes: { italic: true } },
         ]
         expect(Delta.clean(delta)).toEqual(delta)
     })
 
     it("merges consecutive removes", () => {
         const delta = [
-            { attributes: undefined, type: "remove" as const, value: 3 },
-            { attributes: undefined, type: "remove" as const, value: 5 },
+            { delete: 3 as const },
+            { delete: 5 as const },
         ]
         expect(Delta.clean(delta)).toEqual([
-            { attributes: undefined, type: "remove", value: 8 },
+            { delete: 8 },
         ])
     })
 
     it("merges consecutive retains with same attributes", () => {
         const delta = [
-            { attributes: { bold: true }, type: "retain" as const, value: 3 },
-            { attributes: { bold: true }, type: "retain" as const, value: 5 },
+            { retain: 3 as const, attributes: { bold: true } },
+            { retain: 5 as const, attributes: { bold: true } },
         ]
         expect(Delta.clean(delta)).toEqual([
-            { attributes: { bold: true }, type: "retain", value: 8 },
+            { retain: 8, attributes: { bold: true } },
         ])
     })
 

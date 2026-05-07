@@ -18,7 +18,7 @@ const base = Delta.insert([], "Hello");
 const change = Delta.retain([], 5, { bold: true });
 
 Delta.invert(change, base);
-// [{ type: "retain", value: 5, attributes: { bold: null } }]
+// [{ retain: 5, attributes: { bold: null } }]
 
 const insert = pipe(
     [],
@@ -27,8 +27,8 @@ const insert = pipe(
 );
 
 Delta.invert(insert, base);
-// [{ type: "retain", value: 5 },
-//  { type: "remove", value: 6 }]
+// [{ retain: 5 },
+//  { delete: 6 }]
 ```
 
 ```ts [data-last]
@@ -38,7 +38,7 @@ const base = Delta.insert([], "Hello");
 const change = Delta.retain([], 5, { bold: true });
 
 pipe(change, Delta.invert(base));
-// [{ type: "retain", value: 5, attributes: { bold: null } }]
+// [{ retain: 5, attributes: { bold: null } }]
 ```
 
 :::

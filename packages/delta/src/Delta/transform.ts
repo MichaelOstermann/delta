@@ -28,11 +28,11 @@ import { OpIterator } from "../OpIterator"
  * const b = Delta.insert([], "World");
  *
  * Delta.transform(a, b, true);
- * // [{ type: "retain", value: 5 },
- * //  { type: "insert", value: "World" }]
+ * // [{ retain: 5 },
+ * //  { insert: "World" }]
  *
  * Delta.transform(a, b, false);
- * // [{ type: "insert", value: "World" }]
+ * // [{ insert: "World" }]
  *
  * const format = Delta.retain([], 5, { bold: true });
  * const insert = pipe(
@@ -42,7 +42,7 @@ import { OpIterator } from "../OpIterator"
  * );
  *
  * Delta.transform(insert, format);
- * // [{ type: "retain", value: 8, attributes: { bold: true } }]
+ * // [{ retain: 8, attributes: { bold: true } }]
  * ```
  *
  * ```ts [data-last]
@@ -52,8 +52,8 @@ import { OpIterator } from "../OpIterator"
  * const b = Delta.insert([], "World");
  *
  * pipe(a, Delta.transform(b, true));
- * // [{ type: "retain", value: 5 },
- * //  { type: "insert", value: "World" }]
+ * // [{ retain: 5 },
+ * //  { insert: "World" }]
  * ```
  *
  */
@@ -87,10 +87,10 @@ export const transform: {
             const aOp = OpIterator.next(aIter, length)
             const bOp = OpIterator.next(bIter, length)
 
-            if (aOp.type === "remove") {
+            if ("delete" in aOp) {
                 continue
             }
-            if (bOp.type === "remove") {
+            if ("delete" in bOp) {
                 ops = Delta.push(ops, bOp)
             }
             else {

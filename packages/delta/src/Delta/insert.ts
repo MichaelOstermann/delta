@@ -23,25 +23,25 @@ import { hasKeys } from "../internals/hasKeys"
  * import { Delta } from "@monstermann/delta";
  *
  * Delta.insert([], "Hello");
- * // [{ type: "insert", value: "Hello" }]
+ * // [{ insert: "Hello" }]
  *
  * Delta.insert([], "Hello", { bold: true });
- * // [{ type: "insert", value: "Hello", attributes: { bold: true } }]
+ * // [{ insert: "Hello", attributes: { bold: true } }]
  * ```
  *
  * ```ts [data-last]
  * import { Delta } from "@monstermann/delta";
  *
  * pipe([], Delta.insert("Hello"));
- * // [{ type: "insert", value: "Hello" }]
+ * // [{ insert: "Hello" }]
  *
  * pipe(
  *     [],
  *     Delta.insert("Hello", { bold: true }),
  *     Delta.insert(" world", { italic: true }),
  * );
- * // [{ type: "insert", value: "Hello", attributes: { bold: true } },
- * //  { type: "insert", value: " world", attributes: { italic: true } }]
+ * // [{ insert: "Hello", attributes: { bold: true } },
+ * //  { insert: " world", attributes: { italic: true } }]
  * ```
  *
  */
@@ -63,8 +63,7 @@ export const insert: {
 ): Delta => {
     if (typeof content === "string" && !content.length) return ops
     return Delta.push(ops, {
+        insert: content,
         attributes: attributes && hasKeys(attributes) ? attributes : undefined,
-        type: "insert",
-        value: content,
     })
 }, args => Array.isArray(args[0]))

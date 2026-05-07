@@ -18,18 +18,18 @@ export function next(
         else {
             opIt.offset += length
         }
-        if (nextOp.type === "remove") {
-            return { attributes: undefined, type: "remove", value: length }
+        if ("delete" in nextOp) {
+            return { delete: length }
         }
-        if (nextOp.type === "retain") {
-            return { attributes: nextOp.attributes, type: "retain", value: length }
+        if ("retain" in nextOp) {
+            return { retain: length, attributes: nextOp.attributes }
         }
-        if (typeof nextOp.value === "string") {
-            return { attributes: nextOp.attributes, type: "insert", value: nextOp.value.slice(offset, offset + length) }
+        if (typeof nextOp.insert === "string") {
+            return { insert: nextOp.insert.slice(offset, offset + length), attributes: nextOp.attributes }
         }
         // Embed inserts are atomic (length 1) — return the whole object
-        return { attributes: nextOp.attributes, type: "insert", value: nextOp.value }
+        return { insert: nextOp.insert, attributes: nextOp.attributes }
     }
 
-    return { attributes: undefined, type: "retain", value: Infinity }
+    return { retain: Infinity, attributes: undefined }
 }

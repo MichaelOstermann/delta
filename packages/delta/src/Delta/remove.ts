@@ -16,18 +16,18 @@ import { Delta } from "."
  * import { Delta } from "@monstermann/delta";
  *
  * Delta.remove([], 5);
- * // [{ type: "remove", value: 5 }]
+ * // [{ delete: 5 }]
  * ```
  *
  * ```ts [data-last]
  * import { Delta } from "@monstermann/delta";
  *
  * pipe([], Delta.remove(5));
- * // [{ type: "remove", value: 5 }]
+ * // [{ delete: 5 }]
  *
  * pipe([], Delta.retain(3), Delta.remove(5));
- * // [{ type: "retain", value: 3 },
- * //  { type: "remove", value: 5 }]
+ * // [{ retain: 3 },
+ * //  { delete: 5 }]
  * ```
  *
  */
@@ -40,5 +40,5 @@ export const remove: {
 ): Delta => {
     if (!Number.isInteger(length)) return ops
     if (length <= 0) return ops
-    return Delta.push(ops, { attributes: undefined, type: "remove", value: length })
+    return Delta.push(ops, { delete: length })
 }, 2)

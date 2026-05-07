@@ -13,28 +13,25 @@ Pushes an operation onto the delta, merging with the previous operation if possi
 ```ts [data-first]
 import { Delta } from "@monstermann/delta";
 
-Delta.push([], { type: "insert", value: "Hello" });
-// [{ type: "insert", value: "Hello" }]
+Delta.push([], { insert: "Hello" });
+// [{ insert: "Hello" }]
 
-Delta.push(Delta.push([], { type: "insert", value: "Hello" }), {
-    type: "insert",
-    value: " world",
-});
-// [{ type: "insert", value: "Hello world" }]
+Delta.push(Delta.push([], { insert: "Hello" }), { insert: " world" });
+// [{ insert: "Hello world" }]
 ```
 
 ```ts [data-last]
 import { Delta } from "@monstermann/delta";
 
-pipe([], Delta.push({ type: "insert", value: "Hello" }));
-// [{ type: "insert", value: "Hello" }]
+pipe([], Delta.push({ insert: "Hello" }));
+// [{ insert: "Hello" }]
 
 pipe(
     [],
-    Delta.push({ type: "insert", value: "Hello" }),
-    Delta.push({ type: "insert", value: " world" }),
+    Delta.push({ insert: "Hello" }),
+    Delta.push({ insert: " world" }),
 );
-// [{ type: "insert", value: "Hello world" }]
+// [{ insert: "Hello world" }]
 ```
 
 :::

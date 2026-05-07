@@ -23,7 +23,7 @@ import { OpAttributes } from "../OpAttributes"
  * const change = Delta.retain([], 5, { bold: true });
  *
  * Delta.invert(change, base);
- * // [{ type: "retain", value: 5, attributes: { bold: null } }]
+ * // [{ retain: 5, attributes: { bold: null } }]
  *
  * const insert = pipe(
  *     [],
@@ -32,8 +32,8 @@ import { OpAttributes } from "../OpAttributes"
  * );
  *
  * Delta.invert(insert, base);
- * // [{ type: "retain", value: 5 },
- * //  { type: "remove", value: 6 }]
+ * // [{ retain: 5 },
+ * //  { delete: 6 }]
  * ```
  *
  * ```ts [data-last]
@@ -43,7 +43,7 @@ import { OpAttributes } from "../OpAttributes"
  * const change = Delta.retain([], 5, { bold: true });
  *
  * pipe(change, Delta.invert(base));
- * // [{ type: "retain", value: 5, attributes: { bold: null } }]
+ * // [{ retain: 5, attributes: { bold: null } }]
  * ```
  *
  */
@@ -59,17 +59,17 @@ export const invert: {
 
     let baseIndex = 0
     for (const aOp of a) {
-        if (aOp.type === "insert") {
+        if ("insert" in aOp) {
             newOps = Delta.remove(newOps, Op.length(aOp))
         }
-        else if (aOp.type === "retain" && aOp.attributes == null) {
-            newOps = Delta.retain(newOps, aOp.value)
-            baseIndex += aOp.value
+        else if ("retain" in aOp && aOp.attributes == null) {
+            newOps = Delta.retain(newOps, aOp.retain)
+            baseIndex += aOp.retain
         }
         else {
-            const length = aOp.value
+            const length = "retain" in aOp ? aOp.retain : aOp.delete
             for (const bOp of Delta.slice(b, baseIndex, baseIndex + length)) {
-                if (aOp.type === "remove") {
+                if ("delete" in aOp) {
                     newOps = Delta.push(newOps, bOp)
                 }
                 else if (aOp.attributes) {

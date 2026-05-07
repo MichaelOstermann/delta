@@ -19,14 +19,14 @@ const a = Delta.insert([], "Hello");
 const b = Delta.insert([], "Hello world");
 
 Delta.diff(a, b);
-// [{ type: "retain", value: 5 },
-//  { type: "insert", value: " world" }]
+// [{ retain: 5 },
+//  { insert: " world" }]
 
 const plain = Delta.insert([], "Hello");
 const bold = Delta.insert([], "Hello", { bold: true });
 
 Delta.diff(plain, bold);
-// [{ type: "retain", value: 5, attributes: { bold: true } }]
+// [{ retain: 5, attributes: { bold: true } }]
 ```
 
 ```ts [data-last]
@@ -36,8 +36,8 @@ const a = Delta.insert([], "Hello");
 const b = Delta.insert([], "Hello world");
 
 pipe(a, Delta.diff(b));
-// [{ type: "retain", value: 5 },
-//  { type: "insert", value: " world" }]
+// [{ retain: 5 },
+//  { insert: " world" }]
 ```
 
 :::
@@ -54,10 +54,10 @@ const b = Delta.insert([], "foo bar foo");
 
 // cursor=3: user typed " bar foo" at the end
 Delta.diff(a, b, 3);
-// [{ type: "retain", value: 3 },
-//  { type: "insert", value: " bar foo" }]
+// [{ retain: 3 },
+//  { insert: " bar foo" }]
 
 // cursor=0: user typed "foo bar " at the beginning
 Delta.diff(a, b, 0);
-// [{ type: "insert", value: "foo bar " }]
+// [{ insert: "foo bar " }]
 ```
