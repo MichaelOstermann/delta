@@ -20,7 +20,7 @@
     },
     "packages/delta": {
       "name": "@monstermann/delta",
-      "version": "0.2.1",
+      "version": "0.3.0",
       "dependencies": {
         "@monstermann/dfdl": "^0.2.0",
         "@monstermann/remmi": "^0.2.0",
