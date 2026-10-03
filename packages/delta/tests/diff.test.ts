@@ -1,19 +1,19 @@
-import { pipe } from "@monstermann/dfdl"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it } from "bun:test"
 import { Delta } from "../src/Delta"
+import { $, pipe } from "./helpers"
 
 describe("diff()", () => {
     it("insert", () => {
         const a = Delta.insert([], "A")
         const b = Delta.insert([], "AB")
-        const expected = pipe([], Delta.retain(1), Delta.insert("B"))
+        const expected = pipe([], $.retain(1), $.insert("B"))
         expect(Delta.diff(a, b)).toEqual(expected)
     })
 
     it("remove", () => {
         const a = Delta.insert([], "AB")
         const b = Delta.insert([], "A")
-        const expected = pipe([], Delta.retain(1), Delta.remove(1))
+        const expected = pipe([], $.retain(1), $.remove(1))
         expect(Delta.diff(a, b)).toEqual(expected)
     })
 
@@ -40,7 +40,7 @@ describe("diff()", () => {
 
     it("error on non-documents", () => {
         const a = Delta.insert([], "A")
-        const b = pipe([], Delta.retain(1), Delta.insert("B"))
+        const b = pipe([], $.retain(1), $.insert("B"))
         expect(() => {
             Delta.diff(a, b)
         }).toThrow()
@@ -52,15 +52,15 @@ describe("diff()", () => {
     it("inconvenient indexes", () => {
         const a = pipe(
             [],
-            Delta.insert("12", { bold: true }),
-            Delta.insert("34", { italic: true }),
+            $.insert("12", { bold: true }),
+            $.insert("34", { italic: true }),
         )
         const b = Delta.insert([], "123", { color: "red" })
         const expected = pipe(
             [],
-            Delta.retain(2, { bold: null, color: "red" }),
-            Delta.retain(1, { color: "red", italic: null }),
-            Delta.remove(1),
+            $.retain(2, { bold: null, color: "red" }),
+            $.retain(1, { color: "red", italic: null }),
+            $.remove(1),
         )
         expect(Delta.diff(a, b)).toEqual(expected)
     })
@@ -68,25 +68,25 @@ describe("diff()", () => {
     it("combination", () => {
         const a = pipe(
             [],
-            Delta.insert("Bad", { color: "red" }),
-            Delta.insert("cat", { color: "blue" }),
+            $.insert("Bad", { color: "red" }),
+            $.insert("cat", { color: "blue" }),
         )
         const b = pipe(
             [],
-            Delta.insert("Good", { bold: true }),
-            Delta.insert("dog", { italic: true }),
+            $.insert("Good", { bold: true }),
+            $.insert("dog", { italic: true }),
         )
         const expected = pipe(
             [],
-            Delta.insert("Good", { bold: true }),
-            Delta.insert("dog", { italic: true }),
-            Delta.remove(6),
+            $.insert("Good", { bold: true }),
+            $.insert("dog", { italic: true }),
+            $.remove(6),
         )
         expect(Delta.diff(a, b)).toEqual(expected)
     })
 
     it("same document", () => {
-        const a = pipe([], Delta.insert("A"), Delta.insert("B", { bold: true }))
+        const a = pipe([], $.insert("A"), $.insert("B", { bold: true }))
         const expected: Delta = []
         expect(Delta.diff(a, a)).toEqual(expected)
     })
@@ -96,12 +96,12 @@ describe("diff()", () => {
         const attr2 = { color: "red" }
         const a1 = Delta.insert([], "A", attr1)
         const a2 = Delta.insert([], "A", attr1)
-        const b1 = pipe([], Delta.insert("A", { bold: true }), Delta.insert("B"))
-        const b2 = pipe([], Delta.insert("A", { bold: true }), Delta.insert("B"))
+        const b1 = pipe([], $.insert("A", { bold: true }), $.insert("B"))
+        const b2 = pipe([], $.insert("A", { bold: true }), $.insert("B"))
         const expected = pipe(
             [],
-            Delta.retain(1, { bold: true, color: null }),
-            Delta.insert("B"),
+            $.retain(1, { bold: true, color: null }),
+            $.insert("B"),
         )
         expect(Delta.diff(a1, b1)).toEqual(expected)
         expect(a1).toEqual(a2)
@@ -119,7 +119,7 @@ describe("diff()", () => {
     it("embed mismatch", () => {
         const a = Delta.insert([], { embed: 1 })
         const b = Delta.insert([], { embed: 2 })
-        const expected = pipe([], Delta.remove(1), Delta.insert({ embed: 2 }))
+        const expected = pipe([], $.remove(1), $.insert({ embed: 2 }))
         expect(Delta.diff(a, b)).toEqual(expected)
     })
 
@@ -133,14 +133,14 @@ describe("diff()", () => {
     it("embed object mismatch (different keys)", () => {
         const a = Delta.insert([], { alt: "Overwrite", image: "http://quilljs.com" })
         const b = Delta.insert([], { image: "http://quilljs.com" })
-        const expected = pipe([], Delta.insert({ image: "http://quilljs.com" }), Delta.remove(1))
+        const expected = pipe([], $.insert({ image: "http://quilljs.com" }), $.remove(1))
         expect(Delta.diff(a, b)).toEqual(expected)
     })
 
     it("embed false positive (\\0 string vs embed are different)", () => {
         const a = Delta.insert([], { embed: 1 })
         const b = Delta.insert([], String.fromCharCode(0))
-        const expected = pipe([], Delta.insert(String.fromCharCode(0)), Delta.remove(1))
+        const expected = pipe([], $.insert(String.fromCharCode(0)), $.remove(1))
         expect(Delta.diff(a, b)).toEqual(expected)
     })
 

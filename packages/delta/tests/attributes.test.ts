@@ -1,5 +1,5 @@
 import type { NullableOpAttributes } from "../src/OpAttributes"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it } from "bun:test"
 import { OpAttributes } from "../src/OpAttributes"
 
 describe("OpAttributes", () => {
@@ -73,7 +73,7 @@ describe("OpAttributes", () => {
         it("add format", () => {
             const added = { bold: true, color: "red", italic: true }
             const expected = { italic: true }
-            expect(OpAttributes.diff(format, added)).toEqual(expected)
+            expect<unknown>(OpAttributes.diff(format, added)).toEqual(expected)
         })
 
         it("remove format", () => {

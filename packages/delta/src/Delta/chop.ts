@@ -1,6 +1,4 @@
 import type { Delta } from "."
-import { dfdlT } from "@monstermann/dfdl"
-import { cloneArray } from "@monstermann/remmi"
 
 /**
  * # chop
@@ -14,47 +12,27 @@ import { cloneArray } from "@monstermann/remmi"
  * ## Example
  *
  * <!-- prettier-ignore -->
- * ```ts [data-first]
+ * ```ts
  * import { Delta } from "@monstermann/delta";
  *
- * Delta.chop(pipe(
- *     [],
- *     Delta.insert("Hello"),
- *     Delta.retain(5)
- * ));
+ * Delta.chop([
+ *     { insert: "Hello" },
+ *     { retain: 5 },
+ * ]);
  * // [{ insert: "Hello" }]
  *
- * Delta.chop(pipe(
- *     [],
- *     Delta.insert("Hello"),
- *     Delta.retain(5, { bold: true })
- * ));
+ * Delta.chop([
+ *     { insert: "Hello" },
+ *     { retain: 5, attributes: { bold: true } },
+ * ]);
  * // [{ insert: "Hello" },
  * //  { retain: 5, attributes: { bold: true } }]
  * ```
- *
- * <!-- prettier-ignore -->
- * ```ts [data-last]
- * import { Delta } from "@monstermann/delta";
- *
- * pipe(
- *     [],
- *     Delta.insert("Hello"),
- *     Delta.retain(5),
- *     Delta.chop()
- * );
- * // [{ insert: "Hello" }]
- * ```
- *
  */
-export const chop: {
-    (): (ops: Delta) => Delta
-    (ops: Delta): Delta
-} = dfdlT((ops: Delta): Delta => {
+export function chop(ops: Delta): Delta {
     const lastOp = ops[ops.length - 1]
     if (lastOp != null && "retain" in lastOp && !lastOp.attributes) {
-        ops = cloneArray(ops)
-        ops.pop()
+        return ops.slice(0, -1)
     }
     return ops
-}, 1)
+}

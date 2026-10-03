@@ -1,5 +1,4 @@
 import type { OpAttributes } from "../OpAttributes"
-import { dfdlT } from "@monstermann/dfdl"
 import { Delta } from "."
 import { hasKeys } from "../internals/hasKeys"
 
@@ -18,7 +17,7 @@ import { hasKeys } from "../internals/hasKeys"
  *
  * ## Example
  *
- * ```ts [data-first]
+ * ```ts
  * import { Delta } from "@monstermann/delta";
  *
  * Delta.retain([], 5);
@@ -29,20 +28,6 @@ import { hasKeys } from "../internals/hasKeys"
  * ```
  *
  * <!-- prettier-ignore -->
- * ```ts [data-last]
- * import { Delta } from "@monstermann/delta";
- *
- * pipe([], Delta.retain(5));
- * // [{ retain: 5 }]
- *
- * pipe(
- *     [],
- *     Delta.retain(3),
- *     Delta.retain(2, { italic: true })
- * );
- * // [{ retain: 3 },
- * //  { retain: 2, attributes: { italic: true } }]
- * ```
  *
  * ## Removing attributes
  *
@@ -60,28 +45,16 @@ import { hasKeys } from "../internals/hasKeys"
  * Delta.compose(doc, removeBold);
  * // [{ insert: "Hello" }]
  * ```
- *
  */
-export const retain: {
-    (
-        length: number,
-        attributes?: OpAttributes | null,
-    ): (ops: Delta) => Delta
-
-    (
-        ops: Delta,
-        length: number,
-        attributes?: OpAttributes | null,
-    ): Delta
-} = dfdlT((
+export function retain(
     ops: Delta,
     length: number,
-    attributes?: OpAttributes,
-): Delta => {
+    attributes?: OpAttributes | null,
+): Delta {
     if (!Number.isInteger(length)) return ops
     if (length <= 0) return ops
     return Delta.push(ops, {
         attributes: attributes && hasKeys(attributes) ? attributes : undefined,
         retain: length,
     })
-}, args => typeof args[0] !== "number")
+}

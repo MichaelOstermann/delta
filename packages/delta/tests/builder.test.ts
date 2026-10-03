@@ -1,6 +1,6 @@
-import { pipe } from "@monstermann/dfdl"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it } from "bun:test"
 import { Delta } from "../src/Delta"
+import { $, pipe } from "./helpers"
 
 describe("insert()", () => {
     it("insert(text)", () => {
@@ -27,13 +27,13 @@ describe("insert()", () => {
     it("insert(text) after delete", () => {
         const delta = pipe(
             [],
-            Delta.remove(1),
-            Delta.insert("a"),
+            $.remove(1),
+            $.insert("a"),
         )
         const expected = pipe(
             [],
-            Delta.insert("a"),
-            Delta.remove(1),
+            $.insert("a"),
+            $.remove(1),
         )
         expect(delta).toEqual(expected)
     })
@@ -41,21 +41,21 @@ describe("insert()", () => {
     it("insert(text) after delete with merge", () => {
         const delta = pipe(
             [],
-            Delta.insert("a"),
-            Delta.remove(1),
-            Delta.insert("b"),
+            $.insert("a"),
+            $.remove(1),
+            $.insert("b"),
         )
         const expected = pipe(
             [],
-            Delta.insert("ab"),
-            Delta.remove(1),
+            $.insert("ab"),
+            $.remove(1),
         )
         expect(delta).toEqual(expected)
     })
 
     it("insert(text, {})", () => {
-        const delta = pipe([], Delta.insert("a", {}))
-        const expected = pipe([], Delta.insert("a"))
+        const delta = pipe([], $.insert("a", {}))
+        const expected = pipe([], $.insert("a"))
         expect(delta).toEqual(expected)
     })
 })
@@ -100,13 +100,13 @@ describe("retain()", () => {
     it("retain(length, {})", () => {
         const delta = pipe(
             [],
-            Delta.retain(2, {}),
-            Delta.remove(1), // Delete prevents chop
+            $.retain(2, {}),
+            $.remove(1), // Delete prevents chop
         )
         const expected = pipe(
             [],
-            Delta.retain(2),
-            Delta.remove(1),
+            $.retain(2),
+            $.remove(1),
         )
         expect(delta).toEqual(expected)
     })
@@ -121,8 +121,8 @@ describe("push()", () => {
     it("push(op) consecutive remove", () => {
         const delta = pipe(
             [],
-            Delta.remove(2),
-            Delta.push({ delete: 3 }),
+            $.remove(2),
+            $.push({ delete: 3 }),
         )
         expect(delta.length).toEqual(1)
         expect(delta[0]).toEqual({ delete: 5 })
@@ -131,8 +131,8 @@ describe("push()", () => {
     it("push(op) consecutive text", () => {
         const delta = pipe(
             [],
-            Delta.insert("a"),
-            Delta.push({ attributes: undefined, insert: "b" }),
+            $.insert("a"),
+            $.push({ attributes: undefined, insert: "b" }),
         )
         expect(delta.length).toEqual(1)
         expect(delta[0]).toEqual({ attributes: undefined, insert: "ab" })
@@ -141,8 +141,8 @@ describe("push()", () => {
     it("push(op) consecutive texts with matching attributes", () => {
         const delta = pipe(
             [],
-            Delta.insert("a", { bold: true }),
-            Delta.push({ attributes: { bold: true }, insert: "b" }),
+            $.insert("a", { bold: true }),
+            $.push({ attributes: { bold: true }, insert: "b" }),
         )
         expect(delta.length).toEqual(1)
         expect(delta[0]).toEqual({ attributes: { bold: true }, insert: "ab" })
@@ -151,8 +151,8 @@ describe("push()", () => {
     it("push(op) consecutive retains with matching attributes", () => {
         const delta = pipe(
             [],
-            Delta.retain(1, { bold: true }),
-            Delta.push({ attributes: { bold: true }, retain: 3 }),
+            $.retain(1, { bold: true }),
+            $.push({ attributes: { bold: true }, retain: 3 }),
         )
         expect(delta.length).toEqual(1)
         expect(delta[0]).toEqual({ attributes: { bold: true }, retain: 4 })
@@ -161,8 +161,8 @@ describe("push()", () => {
     it("push(op) consecutive texts with mismatched attributes", () => {
         const delta = pipe(
             [],
-            Delta.insert("a", { bold: true }),
-            Delta.push({ attributes: undefined, insert: "b" }),
+            $.insert("a", { bold: true }),
+            $.push({ attributes: undefined, insert: "b" }),
         )
         expect(delta.length).toEqual(2)
     })
@@ -170,8 +170,8 @@ describe("push()", () => {
     it("push(op) consecutive retains with mismatched attributes", () => {
         const delta = pipe(
             [],
-            Delta.retain(1, { bold: true }),
-            Delta.push({ attributes: undefined, retain: 3 }),
+            $.retain(1, { bold: true }),
+            $.push({ attributes: undefined, retain: 3 }),
         )
         expect(delta.length).toEqual(2)
     })
@@ -179,8 +179,8 @@ describe("push()", () => {
     it("push(op) consecutive embeds with matching attributes are not merged", () => {
         const delta = pipe(
             [],
-            Delta.insert({ embed: 1 }, { alt: "Description" }),
-            Delta.push({ attributes: { alt: "Description" }, insert: { url: "http://quilljs.com" } }),
+            $.insert({ embed: 1 }, { alt: "Description" }),
+            $.push({ attributes: { alt: "Description" }, insert: { url: "http://quilljs.com" } }),
         )
         expect(delta.length).toEqual(2)
     })
@@ -215,15 +215,15 @@ describe("insert() embed", () => {
     it("insert(text) after embed+delete does not merge text with embed", () => {
         const delta = pipe(
             [],
-            Delta.insert({ embed: 1 }),
-            Delta.remove(1),
-            Delta.insert("a"),
+            $.insert({ embed: 1 }),
+            $.remove(1),
+            $.insert("a"),
         )
         const expected = pipe(
             [],
-            Delta.insert({ embed: 1 }),
-            Delta.insert("a"),
-            Delta.remove(1),
+            $.insert({ embed: 1 }),
+            $.insert("a"),
+            $.remove(1),
         )
         expect(delta).toEqual(expected)
     })

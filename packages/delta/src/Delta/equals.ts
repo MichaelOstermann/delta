@@ -1,5 +1,4 @@
 import type { Delta } from "."
-import { dfdlT } from "@monstermann/dfdl"
 import { isEqual } from "../internals/isEqual"
 
 /**
@@ -13,7 +12,7 @@ import { isEqual } from "../internals/isEqual"
  *
  * ## Example
  *
- * ```ts [data-first]
+ * ```ts
  * import { Delta } from "@monstermann/delta";
  *
  * const a = Delta.insert([], "Hello", { bold: true });
@@ -23,21 +22,8 @@ import { isEqual } from "../internals/isEqual"
  * Delta.equals(a, b); // true
  * Delta.equals(a, c); // false
  * ```
- *
- * ```ts [data-last]
- * import { Delta } from "@monstermann/delta";
- *
- * const a = Delta.insert([], "Hello", { bold: true });
- * const b = Delta.insert([], "Hello", { bold: true });
- *
- * pipe(a, Delta.equals(b)); // true
- * ```
- *
  */
-export const equals: {
-    (b: Delta): (a: Delta) => boolean
-    (a: Delta, b: Delta): boolean
-} = dfdlT((a: Delta, b: Delta): boolean => {
+export function equals(a: Delta, b: Delta): boolean {
     if (a.length !== b.length) return false
     for (let i = 0; i < a.length; i++) {
         const aOp = a[i]!
@@ -58,4 +44,4 @@ export const equals: {
         }
     }
     return true
-}, 2)
+}

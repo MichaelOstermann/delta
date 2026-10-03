@@ -4,7 +4,6 @@
 // dprint-ignore-file
 // biome-ignore lint: disable
 
-import { batch } from "./batch.js";
 import { chop } from "./chop.js";
 import { clean } from "./clean.js";
 import { compose } from "./compose.js";
@@ -25,7 +24,6 @@ type Delta = Op[]
 
 declare namespace Delta {
     export {
-        batch,
         chop,
         clean,
         compose,

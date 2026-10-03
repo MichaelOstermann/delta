@@ -10,18 +10,18 @@ import { OpAttributes } from "../OpAttributes/index.js";
 type EmbedValue = Record<string, unknown>
 
 type InsertOp = {
-    insert: string | EmbedValue
     attributes?: OpAttributes
+    insert: string | EmbedValue
 }
 
 type RetainOp = {
-    retain: number
     attributes?: OpAttributes
+    retain: number
 }
 
 type DeleteOp = {
-    delete: number
     attributes?: undefined
+    delete: number
 }
 
 type Op = InsertOp | RetainOp | DeleteOp

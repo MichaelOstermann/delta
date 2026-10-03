@@ -4,7 +4,6 @@
 // dprint-ignore-file
 // biome-ignore lint: disable
 
-import { batch } from "./batch.js";
 import { chop } from "./chop.js";
 import { clean } from "./clean.js";
 import { compose } from "./compose.js";
@@ -21,7 +20,6 @@ import { slice } from "./slice.js";
 import { transform } from "./transform.js";
 
 export const Delta = {
-    batch,
     chop,
     clean,
     compose,

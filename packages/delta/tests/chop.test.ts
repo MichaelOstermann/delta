@@ -1,17 +1,17 @@
-import { pipe } from "@monstermann/dfdl"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it } from "bun:test"
 import { Delta } from "../src/Delta"
+import { $, pipe } from "./helpers"
 
 describe("chop()", () => {
     it("removes trailing retain without attributes", () => {
-        const delta = pipe([], Delta.insert("Hello"), Delta.retain(5))
+        const delta = pipe([], $.insert("Hello"), $.retain(5))
         expect(Delta.chop(delta)).toEqual([
             { attributes: undefined, insert: "Hello" },
         ])
     })
 
     it("keeps trailing retain with attributes", () => {
-        const delta = pipe([], Delta.insert("Hello"), Delta.retain(5, { bold: true }))
+        const delta = pipe([], $.insert("Hello"), $.retain(5, { bold: true }))
         expect(Delta.chop(delta)).toEqual([
             { attributes: undefined, insert: "Hello" },
             { attributes: { bold: true }, retain: 5 },
@@ -24,7 +24,7 @@ describe("chop()", () => {
     })
 
     it("returns same delta if trailing is not retain", () => {
-        const delta = pipe([], Delta.insert("Hello"), Delta.remove(3))
+        const delta = pipe([], $.insert("Hello"), $.remove(3))
         expect(Delta.chop(delta)).toBe(delta)
     })
 

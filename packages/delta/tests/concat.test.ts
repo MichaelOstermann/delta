@@ -1,5 +1,4 @@
-import { pipe } from "@monstermann/dfdl"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it } from "bun:test"
 import { Delta } from "../src/Delta"
 
 describe("concat()", () => {
@@ -45,14 +44,6 @@ describe("concat()", () => {
         expect(Delta.concat(a, b)).toEqual([
             { attributes: undefined, insert: "Hello" },
             { attributes: { bold: true }, retain: 5 },
-        ])
-    })
-
-    it("works with pipe syntax", () => {
-        const a = Delta.insert([], "Hello")
-        const b = Delta.insert([], " world")
-        expect(pipe(a, Delta.concat(b))).toEqual([
-            { attributes: undefined, insert: "Hello world" },
         ])
     })
 })

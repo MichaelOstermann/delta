@@ -1,8 +1,7 @@
-import { dfdlT } from "@monstermann/dfdl"
-import { endMutations, markAsMutable, startMutations } from "@monstermann/remmi"
+import type { Delta } from "."
 import fastDiff from "fast-diff"
-import { Delta } from "."
 import { isEqual } from "../internals/isEqual"
+import { chopOps, pushOp, removeOp, retainOp } from "../internals/ops"
 import { OpAttributes } from "../OpAttributes"
 import { OpIterator } from "../OpIterator"
 
@@ -23,7 +22,7 @@ const NULL_CHARACTER = "\0"
  *
  * ## Example
  *
- * ```ts [data-first]
+ * ```ts
  * import { Delta } from "@monstermann/delta";
  *
  * const a = Delta.insert([], "Hello");
@@ -38,17 +37,6 @@ const NULL_CHARACTER = "\0"
  *
  * Delta.diff(plain, bold);
  * // [{ retain: 5, attributes: { bold: true } }]
- * ```
- *
- * ```ts [data-last]
- * import { Delta } from "@monstermann/delta";
- *
- * const a = Delta.insert([], "Hello");
- * const b = Delta.insert([], "Hello world");
- *
- * pipe(a, Delta.diff(b));
- * // [{ retain: 5 },
- * //  { insert: " world" }]
  * ```
  *
  * ## Cursor hint
@@ -70,23 +58,18 @@ const NULL_CHARACTER = "\0"
  * Delta.diff(a, b, 0);
  * // [{ insert: "foo bar " }]
  * ```
- *
  */
-export const diff: {
-    (b: Delta, cursor?: number): (a: Delta) => Delta
-    (a: Delta, b: Delta, cursor?: number): Delta
-} = dfdlT((
+export function diff(
     a: Delta,
     b: Delta,
     cursor?: number,
-): Delta => {
+): Delta {
     if (a === b) return []
 
     const aString = toText(a, "Delta.diff(a, b): a is not a document")
     const bString = toText(b, "Delta.diff(a, b): b is not a document")
 
-    startMutations()
-    let ops: Delta = markAsMutable([])
+    const ops: Delta = []
     const diffResult = fastDiff(aString, bString, cursor, true)
     const aIter = OpIterator.create(a)
     const bIter = OpIterator.create(b)
@@ -100,12 +83,12 @@ export const diff: {
 
             if (type === fastDiff.INSERT) {
                 opLength = Math.min(OpIterator.peekLength(bIter), length)
-                ops = Delta.push(ops, OpIterator.next(bIter, opLength)!)
+                pushOp(ops, OpIterator.next(bIter, opLength)!)
             }
             else if (type === fastDiff.DELETE) {
                 opLength = Math.min(length, OpIterator.peekLength(aIter))
                 OpIterator.next(aIter, opLength)
-                ops = Delta.remove(ops, opLength)
+                removeOp(ops, opLength)
             }
             else if (type === fastDiff.EQUAL) {
                 opLength = Math.min(
@@ -123,15 +106,11 @@ export const diff: {
                     )
                 )
                 if (valuesEqual) {
-                    ops = Delta.retain(
-                        ops,
-                        opLength,
-                        OpAttributes.diff(aOp.attributes, bOp.attributes),
-                    )
+                    retainOp(ops, opLength, OpAttributes.diff(aOp.attributes, bOp.attributes))
                 }
                 else {
-                    ops = Delta.push(ops, bOp!)
-                    ops = Delta.remove(ops, opLength)
+                    pushOp(ops, bOp!)
+                    removeOp(ops, opLength)
                 }
             }
 
@@ -139,12 +118,9 @@ export const diff: {
         }
     }
 
-    ops = Delta.chop(ops)
-    endMutations()
+    chopOps(ops)
     return ops
-}, (args) => {
-    return Array.isArray(args[0]) && Array.isArray(args[1])
-})
+}
 
 function toText(ops: Delta, errMsg: string): string {
     return ops.map((op) => {

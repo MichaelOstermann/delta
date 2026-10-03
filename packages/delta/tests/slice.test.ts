@@ -1,6 +1,6 @@
-import { pipe } from "@monstermann/dfdl"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it } from "bun:test"
 import { Delta } from "../src/Delta"
+import { $, pipe } from "./helpers"
 
 describe("slice()", () => {
     it("slices from start", () => {
@@ -27,8 +27,8 @@ describe("slice()", () => {
     it("slices across operations with attributes", () => {
         const delta = pipe(
             [],
-            Delta.insert("Hello", { bold: true }),
-            Delta.insert(" world", { italic: true }),
+            $.insert("Hello", { bold: true }),
+            $.insert(" world", { italic: true }),
         )
         expect(Delta.slice(delta, 3, 8)).toEqual([
             { attributes: { bold: true }, insert: "lo" },

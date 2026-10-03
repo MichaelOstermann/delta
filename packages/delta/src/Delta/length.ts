@@ -1,5 +1,4 @@
 import type { Delta } from "."
-import { dfdlT } from "@monstermann/dfdl"
 import { Op } from "../Op"
 
 /**
@@ -14,37 +13,18 @@ import { Op } from "../Op"
  * ## Example
  *
  * <!-- prettier-ignore -->
- * ```ts [data-first]
+ * ```ts
  * import { Delta } from "@monstermann/delta";
  *
  * Delta.length(Delta.insert([], "Hello")); // 5
  *
- * Delta.length(pipe(
- *     [],
- *     Delta.insert("Hello"),
- *     Delta.retain(3),
- *     Delta.remove(2)
- * )); // 10
+ * Delta.length([
+ *     { insert: "Hello" },
+ *     { retain: 3 },
+ *     { delete: 2 },
+ * ]); // 10
  * ```
- *
- * ```ts [data-last]
- * import { Delta } from "@monstermann/delta";
- *
- * pipe([], Delta.insert("Hello"), Delta.length()); // 5
- *
- * pipe(
- *     [],
- *     Delta.insert("Hello"),
- *     Delta.retain(3),
- *     Delta.remove(2),
- *     Delta.length(),
- * ); // 10
- * ```
- *
  */
-export const length: {
-    (): (ops: Delta) => number
-    (ops: Delta): number
-} = dfdlT((ops: Delta): number => {
+export function length(ops: Delta): number {
     return ops.reduce((acc, op) => acc + Op.length(op), 0)
-}, 1)
+}

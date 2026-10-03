@@ -1,6 +1,5 @@
-import { dfdlT } from "@monstermann/dfdl"
-import { endMutations, markAsMutable, startMutations } from "@monstermann/remmi"
-import { Delta } from "."
+import type { Delta } from "."
+import { chopOps, pushOp } from "../internals/ops"
 import { OpAttributes } from "../OpAttributes"
 import { OpIterator } from "../OpIterator"
 
@@ -16,15 +15,14 @@ import { OpIterator } from "../OpIterator"
  * ## Example
  *
  * <!-- prettier-ignore -->
- * ```ts [data-first]
+ * ```ts
  * import { Delta } from "@monstermann/delta";
  *
  * const a = Delta.insert([], "Hello");
- * const b = pipe(
- *     [],
- *     Delta.retain(5),
- *     Delta.insert(" world")
- * );
+ * const b = [
+ *     { retain: 5 },
+ *     { insert: " world" },
+ * ];
  *
  * Delta.compose(a, b);
  * // [{ insert: "Hello world" }]
@@ -34,33 +32,13 @@ import { OpIterator } from "../OpIterator"
  * Delta.compose(a, format);
  * // [{ insert: "Hello", attributes: { bold: true } }]
  * ```
- *
- * <!-- prettier-ignore -->
- * ```ts [data-last]
- * import { Delta } from "@monstermann/delta";
- *
- * const a = Delta.insert([], "Hello");
- * const b = pipe(
- *     [],
- *     Delta.retain(5),
- *     Delta.insert(" world")
- * );
- *
- * pipe(a, Delta.compose(b));
- * // [{ insert: "Hello world" }]
- * ```
- *
  */
-export const compose: {
-    (b: Delta): (a: Delta) => Delta
-    (a: Delta, b: Delta): Delta
-} = dfdlT((a: Delta, b: Delta): Delta => {
+export function compose(a: Delta, b: Delta): Delta {
     const aIter = OpIterator.create(a)
     const bIter = OpIterator.create(b)
     const bHead = OpIterator.peek(bIter)
 
-    startMutations()
-    let ops: Delta = markAsMutable([])
+    const ops: Delta = []
 
     if (bHead != null && "retain" in bHead && bHead.attributes == null) {
         let bRetain = bHead.retain
@@ -78,10 +56,10 @@ export const compose: {
 
     while (OpIterator.hasNext(aIter) || OpIterator.hasNext(bIter)) {
         if (OpIterator.peekType(bIter) === "insert") {
-            ops = Delta.push(ops, OpIterator.next(bIter))
+            pushOp(ops, OpIterator.next(bIter))
         }
         else if (OpIterator.peekType(aIter) === "delete") {
-            ops = Delta.push(ops, OpIterator.next(aIter))
+            pushOp(ops, OpIterator.next(aIter))
         }
         else {
             const length = Math.min(OpIterator.peekLength(aIter), OpIterator.peekLength(bIter))
@@ -89,25 +67,24 @@ export const compose: {
             const bOp = OpIterator.next(bIter, length)
             if ("retain" in bOp) {
                 if ("retain" in aOp) {
-                    ops = Delta.push(ops, {
+                    pushOp(ops, {
                         attributes: OpAttributes.compose(aOp.attributes, bOp.attributes, true),
                         retain: length,
                     })
                 }
                 else if ("insert" in aOp) {
-                    ops = Delta.push(ops, {
+                    pushOp(ops, {
                         attributes: OpAttributes.compose(aOp.attributes, bOp.attributes),
                         insert: aOp.insert,
                     })
                 }
             }
             else if ("delete" in bOp && "retain" in aOp) {
-                ops = Delta.push(ops, bOp)
+                pushOp(ops, bOp)
             }
         }
     }
 
-    ops = Delta.chop(ops)
-    endMutations()
+    chopOps(ops)
     return ops
-}, 2)
+}

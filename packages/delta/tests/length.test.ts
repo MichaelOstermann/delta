@@ -1,6 +1,6 @@
-import { pipe } from "@monstermann/dfdl"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it } from "bun:test"
 import { Delta } from "../src/Delta"
+import { $, pipe } from "./helpers"
 
 describe("length()", () => {
     it("returns 0 for empty delta", () => {
@@ -25,9 +25,9 @@ describe("length()", () => {
     it("sums multiple operations", () => {
         const delta = pipe(
             [],
-            Delta.insert("Hello"),
-            Delta.retain(3),
-            Delta.remove(2),
+            $.insert("Hello"),
+            $.retain(3),
+            $.remove(2),
         )
         expect(Delta.length(delta)).toBe(10)
     })

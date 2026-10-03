@@ -1,6 +1,5 @@
-import { dfdlT } from "@monstermann/dfdl"
-import { endMutations, markAsMutable, startMutations } from "@monstermann/remmi"
-import { Delta } from "."
+import type { Delta } from "."
+import { pushOp } from "../internals/ops"
 
 /**
  * # clean
@@ -14,47 +13,26 @@ import { Delta } from "."
  * ## Example
  *
  * <!-- prettier-ignore -->
- * ```ts [data-first]
+ * ```ts
  * import { Delta } from "@monstermann/delta";
  *
- * Delta.clean(pipe(
- *     [],
- *     Delta.insert("Hello"),
- *     Delta.insert(" world")
- * ));
+ * Delta.clean([
+ *     { insert: "Hello" },
+ *     { insert: " world" },
+ * ]);
  * // [{ insert: "Hello world" }]
  *
  * Delta.clean(
- *     pipe(
- *         [],
- *         Delta.insert("Hello", { bold: true }),
- *         Delta.insert(" world", { bold: true }),
- *     ),
+ *     [
+ *         { insert: "Hello", attributes: { bold: true } },
+ *         { insert: " world", attributes: { bold: true } },
+ *     ],
  * );
  * // [{ insert: "Hello world", attributes: { bold: true } }]
  * ```
- *
- * <!-- prettier-ignore -->
- * ```ts [data-last]
- * import { Delta } from "@monstermann/delta";
- *
- * pipe(
- *     [],
- *     Delta.insert("Hello"),
- *     Delta.insert(" world"),
- *     Delta.clean()
- * );
- * // [{ insert: "Hello world" }]
- * ```
- *
  */
-export const clean: {
-    (): (ops: Delta) => Delta
-    (ops: Delta): Delta
-} = dfdlT((ops: Delta): Delta => {
-    startMutations()
-    let newOps: Delta = markAsMutable([])
-    for (const op of ops) newOps = Delta.push(newOps, op)
-    endMutations()
+export function clean(ops: Delta): Delta {
+    const newOps: Delta = []
+    for (const op of ops) pushOp(newOps, op)
     return newOps.length === ops.length ? ops : newOps
-}, 1)
+}

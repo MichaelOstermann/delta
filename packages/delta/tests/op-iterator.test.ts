@@ -1,15 +1,14 @@
-import { pipe } from "@monstermann/dfdl"
-import { describe, expect, it } from "vitest"
-import { Delta } from "../src/Delta"
+import { describe, expect, it } from "bun:test"
 import { OpIterator } from "../src/OpIterator"
+import { $, pipe } from "./helpers"
 
 // Delta with an embed: Hello(bold) | retain(3) | embed(src) | remove(4)
 const ops = pipe(
     [],
-    Delta.insert("Hello", { bold: true }),
-    Delta.retain(3),
-    Delta.insert({ embed: 2 }, { src: "http://quilljs.com/" }),
-    Delta.remove(4),
+    $.insert("Hello", { bold: true }),
+    $.retain(3),
+    $.insert({ embed: 2 }, { src: "http://quilljs.com/" }),
+    $.remove(4),
 )
 
 describe("OpIterator (embed)", () => {

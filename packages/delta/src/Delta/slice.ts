@@ -1,5 +1,4 @@
 import type { Delta } from "."
-import { dfdlT } from "@monstermann/dfdl"
 import { Op } from "../Op"
 import { OpIterator } from "../OpIterator"
 
@@ -14,7 +13,7 @@ import { OpIterator } from "../OpIterator"
  *
  * ## Example
  *
- * ```ts [data-first]
+ * ```ts
  * import { Delta } from "@monstermann/delta";
  *
  * const delta = Delta.insert([], "Hello world");
@@ -25,45 +24,21 @@ import { OpIterator } from "../OpIterator"
  * Delta.slice(delta, 6);
  * // [{ insert: "world" }]
  *
- * const formatted = pipe(
- *     [],
- *     Delta.insert("Hello", { bold: true }),
- *     Delta.insert(" world", { italic: true }),
- * );
+ * const formatted = [
+ *     { insert: "Hello", attributes: { bold: true } },
+ *     { insert: " world", attributes: { italic: true } },
+ * ];
  *
  * Delta.slice(formatted, 3, 8);
  * // [{ insert: "lo", attributes: { bold: true } },
  * //  { insert: " wo", attributes: { italic: true } }]
  * ```
- *
- * <!-- prettier-ignore -->
- * ```ts [data-last]
- * import { Delta } from "@monstermann/delta";
- *
- * pipe(
- *     [],
- *     Delta.insert("Hello world"),
- *     Delta.slice(0, 5)
- * );
- * // [{ insert: "Hello" }]
- *
- * pipe(
- *     [],
- *     Delta.insert("Hello world"),
- *     Delta.slice(6)
- * );
- * // [{ insert: "world" }]
- * ```
- *
  */
-export const slice: {
-    (start: number, end?: number): (ops: Delta) => Delta
-    (ops: Delta, start: number, end?: number): Delta
-} = dfdlT((
+export function slice(
     ops: Delta,
     start: number,
     end: number = Infinity,
-): Delta => {
+): Delta {
     const newOps: Delta = []
     const iter = OpIterator.create(ops)
     let index = 0
@@ -79,4 +54,4 @@ export const slice: {
         index += Op.length(nextOp)
     }
     return newOps
-}, args => typeof args[0] !== "number")
+}
