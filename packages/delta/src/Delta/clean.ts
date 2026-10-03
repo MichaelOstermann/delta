@@ -34,5 +34,6 @@ import { pushOp } from "../internals/ops"
 export function clean(ops: Delta): Delta {
     const newOps: Delta = []
     for (const op of ops) pushOp(newOps, op)
-    return newOps.length === ops.length ? ops : newOps
+    // Reordering a delete before an insert keeps the length, so compare the operations too.
+    return newOps.length === ops.length && newOps.every((op, i) => op === ops[i]) ? ops : newOps
 }

@@ -50,6 +50,29 @@ describe("clean()", () => {
         ])
     })
 
+    it("moves inserts before removes", () => {
+        const delta: Delta = [
+            { delete: 1 },
+            { insert: "a" },
+        ]
+        expect(Delta.clean(delta)).toEqual([
+            { insert: "a" },
+            { delete: 1 },
+        ])
+    })
+
+    it("matches building the same operations one by one", () => {
+        const delta: Delta = [
+            { retain: 1 },
+            { delete: 1 },
+            { insert: "a" },
+            { delete: 2 },
+            { attributes: { bold: true }, insert: "b" },
+            { retain: 2 },
+        ]
+        expect(Delta.clean(delta)).toEqual(delta.reduce(Delta.push, [] as Delta))
+    })
+
     it("returns same array if already clean", () => {
         const delta = Delta.insert([], "Hello")
         expect(Delta.clean(delta)).toBe(delta)
