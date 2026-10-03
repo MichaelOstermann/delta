@@ -24,6 +24,7 @@ import { isEqual } from "../internals/isEqual"
  * ```
  */
 export function equals(a: Delta, b: Delta): boolean {
+    if (a === b) return true
     if (a.length !== b.length) return false
     for (let i = 0; i < a.length; i++) {
         const aOp = a[i]!

@@ -8,6 +8,11 @@ describe("equals()", () => {
         expect(Delta.equals(a, b)).toBe(true)
     })
 
+    it("returns true for the same reference", () => {
+        const a = Delta.insert([], "Hello", { bold: true })
+        expect(Delta.equals(a, a)).toBe(true)
+    })
+
     it("returns true for empty deltas", () => {
         expect(Delta.equals([], [])).toBe(true)
     })
