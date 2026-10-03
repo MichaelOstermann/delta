@@ -1,7 +1,8 @@
-import { Delta } from "."
+import type { Delta } from "."
 import { chopOps, pushOp, removeOp, retainOp } from "../internals/ops"
 import { Op } from "../Op"
 import { OpAttributes } from "../OpAttributes"
+import { OpIterator } from "../OpIterator"
 
 /**
  * # invert
@@ -39,28 +40,27 @@ export function invert(
     b: Delta,
 ): Delta {
     const newOps: Delta = []
+    const bIter = OpIterator.create(b)
 
-    let baseIndex = 0
     for (const aOp of a) {
         if ("insert" in aOp) {
             removeOp(newOps, Op.length(aOp))
+            continue
         }
-        else if ("retain" in aOp && aOp.attributes == null) {
-            retainOp(newOps, aOp.retain)
-            baseIndex += aOp.retain
-        }
-        else {
-            const length = "retain" in aOp ? aOp.retain : aOp.delete
-            for (const bOp of Delta.slice(b, baseIndex, baseIndex + length)) {
-                if ("delete" in aOp) {
-                    pushOp(newOps, bOp)
-                }
-                else if (aOp.attributes) {
-                    const bOpLength = Op.length(bOp)
-                    retainOp(newOps, bOpLength, OpAttributes.invert(aOp.attributes, bOp.attributes))
-                }
+
+        let length = Op.length(aOp)
+        if ("retain" in aOp && aOp.attributes == null) retainOp(newOps, length)
+
+        while (length > 0 && OpIterator.hasNext(bIter)) {
+            const bOp = OpIterator.next(bIter, length)
+            const bOpLength = Op.length(bOp)
+            length -= bOpLength
+            if ("delete" in aOp) {
+                pushOp(newOps, bOp)
             }
-            baseIndex += length
+            else if (aOp.attributes) {
+                retainOp(newOps, bOpLength, OpAttributes.invert(aOp.attributes, bOp.attributes))
+            }
         }
     }
 
